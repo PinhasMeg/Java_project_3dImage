@@ -16,7 +16,7 @@ public class Vector {
 //    }
 
     public Point3D get_head() {
-        return new Point3D(_head._x,_head._y,_head._z);
+        return new Point3D(_head._x, _head._y, _head._z);
     }
 
     @Override
@@ -27,20 +27,28 @@ public class Vector {
         return _head.equals(vector._head);
     }
 
-    public Vector crossProduct(Vector edge2) {
-        //todo
-        return new Vector(Point3D.ZERO);
+    /**
+     * this function multiplies two vectors and give a new vector perpendicular to both vectors
+     *
+     * @param vector is multiplied with the currant vector
+     * @return a new vector perpendicular to both vectors
+     */
+    public Vector crossProduct(Vector vector) {
+
+        double x = (this._head.get_y()._coord * vector._head.get_z()._coord - this._head.get_z()._coord * vector._head.get_y()._coord);
+        double y = (this._head.get_x()._coord * vector._head.get_z()._coord - this._head.get_z()._coord * vector._head.get_x()._coord);
+        double z = (this._head.get_x()._coord * vector._head.get_y()._coord - this._head.get_y()._coord * vector._head.get_x()._coord);
+        return new Vector(new Point3D(x, y, z));
     }
 
     /**
-     *
      * @param other
-     * @return
+     * @return double number of the dot product between two vectors
      */
     public double dotProduct(Vector other) {
 
-        return  _head._x.get()*other._head._x.get()+
-                _head._y.get()*other._head._y.get()+
-                _head._z.get()*other._head._z.get();
+        return _head._x.get() * other._head._x.get() +
+                _head._y.get() * other._head._y.get() +
+                _head._z.get() * other._head._z.get();
     }
 }
