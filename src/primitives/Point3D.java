@@ -97,6 +97,7 @@ public class Point3D {
                 this._x.get() - p._x.get(),
                 this._y.get() - p._y.get(),
                 this._z.get() - p._z.get()
+
         ));
     }
 
