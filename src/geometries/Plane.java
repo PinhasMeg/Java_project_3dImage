@@ -6,15 +6,40 @@ public class Plane implements Geometry {
     Point3D _p;
     Vector _normal;
 
-    public Plane(Point3D vertex_x, Point3D vertex_y, Point3D vertex_z) {
-        _p = vertex_x;
+    /**
+     * constructor with 3 points
+     *
+     * @param p1
+     * @param p2
+     * @param p3
+     */
+    public Plane(Point3D p1, Point3D p2, Point3D p3) {
+        _p = p1;
+        _normal = getNormal(p1);
+    }
+
+    /**
+     * constructor with point and normal
+     *
+     * @param point
+     * @param vector
+     */
+    public Plane(Point3D point, Vector vector) {
+        _p = point;
+        _normal = vector;
     }
 
     @Override
     public Vector getNormal(Point3D p) {
         return null;
     }
+
     public Vector getNormal() {
-        return getNormal(Point3D.ZERO);
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return " The Plane's point is: " + _p + ", and the normal is: " + _normal + '.';
     }
 }

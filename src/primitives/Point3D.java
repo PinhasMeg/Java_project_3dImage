@@ -1,5 +1,7 @@
 package primitives;
 
+import static java.lang.StrictMath.sqrt;
+
 /**
  * Point3D basic point with coordinates in X, Y, Z axes
  */
@@ -7,13 +9,16 @@ package primitives;
 public class Point3D {
 
     /**
-     *  Class Point 3D
+     * Class Point 3D
      */
     Coordinate _x;
     Coordinate _y;
     Coordinate _z;
 
+    public final static Point3D ZERO = new Point3D(0.0, 0.0, 0.0);
+
     /**
+     * constructor with 3 coordinates
      *
      * @param _x x coordinate
      * @param _y y coordinate
@@ -25,28 +30,43 @@ public class Point3D {
         this._z = _z;
     }
 
-    public  final static Point3D ZERO = new Point3D(0.0,0.0,0.0);
-
-    public Point3D(double _x, double _y, double _z) {
-        this(new Coordinate(_x),new Coordinate(_y),new Coordinate(_z));
+    /**
+     * constructor with Point3D
+     *
+     * @param point
+     */
+    public Point3D(Point3D point) {
+        this._x = point._x;
+        this._y = point._y;
+        this._z = point._z;
     }
 
     /**
+     * constructor with 3 doubles
      *
+     * @param _x
+     * @param _y
+     * @param _z
+     */
+    public Point3D(double _x, double _y, double _z) {
+        this(new Coordinate(_x), new Coordinate(_y), new Coordinate(_z));
+    }
+
+    /**
      * @return new coordinate based on _x
      */
     public Coordinate get_x() {
         return new Coordinate(_x);
     }
+
     /**
-     *
      * @return new coordinate based on _y
      */
     public Coordinate get_y() {
         return new Coordinate(_y);
     }
+
     /**
-     *
      * @return new coordinate based on _z
      */
     public Coordinate get_z() {
@@ -54,7 +74,6 @@ public class Point3D {
     }
 
     /**
-     *
      * @param o
      * @return if the object is equals to the one we compare
      */
@@ -75,9 +94,26 @@ public class Point3D {
 
     public Vector subtract(Point3D p) {
         return new Vector(new Point3D(
-                p._x.get() - this._x.get(),
-                p._y.get() - this._y.get(),
-                p._z.get() - this._z.get()
+                this._x.get() - p._x.get(),
+                this._y.get() - p._y.get(),
+                this._z.get() - p._z.get()
         ));
+    }
+
+    public Point3D add(Vector vector) {
+        return new Point3D(_x.get() + vector._head._x.get(),
+                _y.get() + vector._head._y.get(),
+                _z.get() + vector._head._z.get()
+        );
+    }
+
+    public double distanceSquared(Point3D p) {
+        return (p._x.get() - this._x.get()) * (p._x.get() - this._x.get())
+                + (p._y.get() - this._y.get()) * (p._y.get() - this._y.get())
+                + (p._z.get() - this._z.get()) * (p._z.get() - this._z.get());
+    }
+
+    public double distance(Point3D p) {
+        return sqrt(distanceSquared(p));
     }
 }
