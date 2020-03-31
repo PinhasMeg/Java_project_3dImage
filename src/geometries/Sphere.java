@@ -1,6 +1,8 @@
 package geometries;
 
-import primitives.Point3D;
+import primitives.*;
+
+import java.util.Objects;
 
 public class Sphere extends RadialGeometry {
     Point3D _center;
@@ -12,7 +14,7 @@ public class Sphere extends RadialGeometry {
      */
     public Sphere(double radius, Point3D center) {
         super(radius);
-        _center = center;
+        _center = new Point3D(center);
     }
 
     /**
@@ -25,6 +27,15 @@ public class Sphere extends RadialGeometry {
         super(radialGeometry);
         _center = center;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof Sphere)) return false;
+        Sphere sphere = (Sphere) o;
+        return this._center.equals(sphere._center) && (Util.isZero(this._radius - sphere._radius));
+    }
+
 
     /**
      * function to get center
