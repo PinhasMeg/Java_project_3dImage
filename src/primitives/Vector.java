@@ -30,7 +30,7 @@ public class Vector {
     public Vector(Coordinate c1, Coordinate c2, Coordinate c3) {
         Point3D head = new Point3D(c1, c2, c3);
         if (head.equals(Point3D.ZERO))
-            throw new IllegalArgumentException("You entered Vector Zero");
+            throw new IllegalArgumentException("Vector Zero is not valid for head");
         else {
             this._head._x = c1;
             this._head._y = c2;
@@ -58,7 +58,7 @@ public class Vector {
     public Vector(double d1, double d2, double d3) {
         Point3D head = new Point3D(d1, d2, d3);
         if (head.equals(Point3D.ZERO))
-            throw new IllegalArgumentException("You entered Vector Zero");
+            throw new IllegalArgumentException("Vector Zero is not valid for head");
         else
             this._head = new Point3D(d1, d2, d3);
     }
@@ -116,7 +116,7 @@ public class Vector {
      * @return
      */
     public Vector subtract(Vector vector) {
-        return this._head.subtract(vector._head);
+        return new Vector(this._head.subtract(vector._head));
     }
 
     /**
