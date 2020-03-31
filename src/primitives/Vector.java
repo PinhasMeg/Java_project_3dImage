@@ -16,7 +16,7 @@ public class Vector {
      */
     public Vector(Point3D head) {
         if (head.equals(Point3D.ZERO))
-            throw new IllegalArgumentException("You entered Vector Zero");
+            throw new IllegalArgumentException("Vector Zero is not valid for head");
         else this._head = head;
     }
 
@@ -116,10 +116,7 @@ public class Vector {
      * @return
      */
     public Vector subtract(Vector vector) {
-        return new Vector(vector._head.get_x().get() - this._head._x.get(),
-                vector._head.get_y().get() - this._head._y.get(),
-                vector._head.get_z().get() - this._head._z.get()
-        );
+        return this._head.subtract(vector._head);
     }
 
     /**
@@ -129,10 +126,7 @@ public class Vector {
      * @return
      */
     public Vector add(Vector vector) {
-        return new Vector(vector._head.get_x().get() + this._head._x.get(),
-                vector._head.get_y().get() + this._head._y.get(),
-                vector._head.get_z().get() + this._head._z.get()
-        );
+        return new Vector(this._head.add(vector));
     }
 
     /**
