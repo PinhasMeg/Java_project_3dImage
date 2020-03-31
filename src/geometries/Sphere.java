@@ -36,6 +36,14 @@ public class Sphere extends RadialGeometry {
         return this._center.equals(sphere._center) && (Util.isZero(this._radius - sphere._radius));
     }
 
+    /**
+     * get the normal to this sphere in a given point
+     */
+    @Override
+    public Vector getNormal(Point3D point) {
+        Vector orthogonal = new Vector(point.subtract(_center));
+        return orthogonal.normalized();
+    }
 
     /**
      * function to get center
