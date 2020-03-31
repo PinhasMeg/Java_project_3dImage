@@ -39,6 +39,16 @@ public class Vector {
     }
 
     /**
+     * constructor with two points
+     *
+     * @param p1
+     * @param p2
+     */
+    public Vector(Point3D p1, Point3D p2) {
+        this(p1.subtract(p2));
+    }
+
+    /**
      * constructor with three doubles
      *
      * @param d1
