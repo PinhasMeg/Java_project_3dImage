@@ -18,7 +18,7 @@ public abstract class Util {
         // 2. Shift all 52 bits to the right (removing mantissa)
         // 3. Zero the sign of number bit by mask 0x7FF
         // 4. "De-normalize" the exponent by subtracting 1023
-        return (int)((Double.doubleToRawLongBits(num) >> 52) & 0x7FFL) - 1023;
+        return (int) ((Double.doubleToRawLongBits(num) >> 52) & 0x7FFL) - 1023;
     }
 
     /**

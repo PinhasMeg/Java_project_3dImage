@@ -1,10 +1,14 @@
 package geometries;
 
-import primitives.Ray;
+import primitives.*;
+
+import java.util.Objects;
+
+import static primitives.Util.isZero;
 
 public class Tube extends RadialGeometry {
 
-    public Ray _axisRay;
+    protected final Ray _axisRay;
 
     /**
      * constructor with parameters
@@ -40,5 +44,43 @@ public class Tube extends RadialGeometry {
     @Override
     public String toString() {
         return "the Tube's axisRay= is :" + _axisRay + ", the radius is" + _radius + '.';
+    }
+
+    @Override
+    public Vector getNormal(Point3D point) {
+        //The vector from the point of the cylinder to the given point
+        Point3D p = _axisRay.get_origin();
+        Vector v = _axisRay.get_vector();
+
+        Vector vector1 = point.subtract(p);
+
+        //We need the projection to multiply the _direction unit vector
+        double projection = vector1.dotProduct(v);
+        if (!isZero(projection)) {
+            // projection of P-O on the ray:
+            p.add(v.scale(projection));
+        }
+
+        //This vector is orthogonal to the _direction vector.
+        Vector check = point.subtract(p);
+        return check.normalize();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof Tube))
+            return false;
+        if (this == obj)
+            return true;
+        Tube other = (Tube) obj;
+
+        //the two vectors needs to be in the same direction,
+        //but not necessary to have the same length.
+        try {
+            Vector v = _axisRay.get_vector().crossProduct(other._axisRay.get_vector());
+        } catch (IllegalArgumentException ex) {
+            return (Util.isZero(this._radius - other._radius) && _axisRay.get_origin().equals((_axisRay.get_origin())));
+        }
+        throw new IllegalArgumentException("direction cross product with parameter.direction == Vector(0,0,0)");
     }
 }

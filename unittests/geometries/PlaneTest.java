@@ -8,6 +8,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PlaneTest {
 
+    /**
+     * Test method for {@link Plane#getNormal()}
+     */
     @Test
     void getNormal() {
         Plane p1 = new Plane(

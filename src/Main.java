@@ -2,6 +2,7 @@
 //Yoel Zeitoun - 1308634 - yoelzeit@gmail.com
 
 
+import geometries.Sphere;
 import primitives.*;
 
 import static java.lang.System.out;

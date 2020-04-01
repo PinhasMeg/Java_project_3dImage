@@ -183,4 +183,10 @@ public class Vector {
     public Vector normalized() {
         return new Vector(normalize());
     }
+
+    @Override
+    public String toString() {
+        return "head=" + _head +
+                '}';
+    }
 }
