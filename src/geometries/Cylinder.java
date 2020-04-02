@@ -13,11 +13,13 @@ public class Cylinder extends Tube {
      *
      * @param radius
      * @param axisRay
-     * @param _height
+     * @param height
      */
-    public Cylinder(double radius, Ray axisRay, double _height) {
+    public Cylinder(double radius, Ray axisRay, double height) {
         super(radius, axisRay);
-        this._height = _height;
+        if (height == 0)
+            throw new IllegalArgumentException("ERROR: Height Zero is not valid!");
+        else this._height = height;
     }
 
     /**
@@ -25,11 +27,13 @@ public class Cylinder extends Tube {
      *
      * @param radialGeometry
      * @param axisRay
-     * @param _height
+     * @param height
      */
-    public Cylinder(RadialGeometry radialGeometry, Ray axisRay, double _height) {
+    public Cylinder(RadialGeometry radialGeometry, Ray axisRay, double height) {
         super(radialGeometry, axisRay);
-        this._height = _height;
+        if (height == 0)
+            throw new IllegalArgumentException("ERROR: Height Zero is not valid!");
+        else this._height = height;
     }
 
     /**
@@ -49,28 +53,25 @@ public class Cylinder extends Tube {
     /**
      * Calculating the normal vector of the Cylinder in specific point
      *
-     * @param p is Point object
+     * @param point is Point object
      * @return new vector that is normal to that cylinder
      */
-    public Vector getNormal(Point3D p) {
-        Point3D o = _axisRay.get_origin();
+    public Vector getNormal(Point3D point) {
+        //The vector from the point of the cylinder to the given point
+        Point3D p = _axisRay.get_origin();
         Vector v = _axisRay.get_vector();
 
-        // projection of P-O on the ray:
-        double t;
-        try {
-            t = alignZero(p.subtract(o).dotProduct(v));
-        } catch (IllegalArgumentException e) { // P = O
-            return v;
+        Vector vector1 = point.subtract(p);
+
+        // We need the projection to multiply the _direction unit vector
+        double projection = vector1.dotProduct(v);
+        double projectionVectorLength = (v.scale(projection)).length();
+
+        // the point is on the sides of the tube
+        if (_height > projectionVectorLength && projection != 0) {
+            return (point.subtract(p.add(v.scale(projection))).normalized());
         }
-
-        // if the point is at a base
-        if (t == 0 || isZero(_height - t)) // if it's close to 0, we'll get ZERO vector exception
-            return v;
-
-        o = o.add(v.scale(t));
-        return p.subtract(o).normalize();
-
-
+        // the point is on a base
+        return get_axisRay().get_vector();
     }
 }
