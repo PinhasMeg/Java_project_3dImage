@@ -65,12 +65,16 @@ public class Cylinder extends Tube {
 
         // We need the projection to multiply the _direction unit vector
         double projection = vector1.dotProduct(v);
-        double projectionVectorLength = (v.scale(projection)).length();
+        try {
+            double projectionVectorLength = (v.scale(projection)).length();
 
-        // the point is on the sides of the tube
-        if (_height > projectionVectorLength && projection != 0) {
-            return (point.subtract(p.add(v.scale(projection))).normalized());
+            // the point is on the sides of the tube
+            if (_height > projectionVectorLength && projection != 0) {
+                return (point.subtract(p.add(v.scale(projection))).normalized());
+            }
+        } catch (IllegalArgumentException e) {
         }
+
         // the point is on a base
         return get_axisRay().get_vector();
     }

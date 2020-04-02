@@ -33,5 +33,11 @@ class CylinderTest {
         Vector normal2 = cylinder.getNormal(p2);
         Vector ExpResult2 = new Vector(1.0, 0.0, 0.0);
         assertEquals(normal2, ExpResult2);
+
+        // point is on the other base of the Cylinder
+        Point3D p3 = new Point3D(2.0, 0.5, 1.5);
+        Vector normal3 = cylinder.getNormal(p3);
+        Vector ExpResult3 = new Vector(1.0, 0.0, 0.0);
+        assertEquals(normal3, ExpResult3);
     }
 }
