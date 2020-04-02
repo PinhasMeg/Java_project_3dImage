@@ -58,12 +58,11 @@ public class Tube extends RadialGeometry {
         double projection = vector1.dotProduct(v);
         if (!isZero(projection)) {
             // projection of P-O on the ray:
-            p.add(v.scale(projection));
+            return (point.subtract(p.add(v.scale(projection))).normalized());
         }
 
-        //This vector is orthogonal to the _direction vector.
-        Vector check = point.subtract(p);
-        return check.normalize();
+        //This vector is orthogonal to the direction vector of the tube.
+        return point.subtract(p).normalized();
     }
 
     @Override

@@ -92,6 +92,10 @@ public class Point3D {
         return "(" + _x + ", " + _y + ", " + _z + ')';
     }
 
+    /**
+     * @param p is a Point3D
+     * @return new vector : thisPoint - paramPoint
+     */
     public Vector subtract(Point3D p) {
         return new Vector(new Point3D(
                 this._x.get() - p._x.get(),
@@ -100,6 +104,10 @@ public class Point3D {
         ));
     }
 
+    /**
+     * @param vector
+     * @return a Point3D
+     */
     public Point3D add(Vector vector) {
         return new Point3D(_x.get() + vector._head._x.get(),
                 _y.get() + vector._head._y.get(),
@@ -107,12 +115,20 @@ public class Point3D {
         );
     }
 
+    /**
+     * @param p
+     * @return
+     */
     public double distanceSquared(Point3D p) {
         return (p._x.get() - this._x.get()) * (p._x.get() - this._x.get())
                 + (p._y.get() - this._y.get()) * (p._y.get() - this._y.get())
                 + (p._z.get() - this._z.get()) * (p._z.get() - this._z.get());
     }
 
+    /**
+     * @param p
+     * @return
+     */
     public double distance(Point3D p) {
         return sqrt(distanceSquared(p));
     }

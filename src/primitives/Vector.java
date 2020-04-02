@@ -130,8 +130,8 @@ public class Vector {
     /**
      * this function scales a vector with a number(scalar)
      *
-     * @param scalar
-     * @return
+     * @param scalar is double
+     * @return a vector
      */
     public Vector scale(double scalar) {
         return new Vector(this._head.get_x().get() * scalar,
