@@ -1,7 +1,5 @@
 package primitives;
 
-import javafx.geometry.Point2D;
-
 import java.util.Objects;
 
 import static java.lang.StrictMath.sqrt;
