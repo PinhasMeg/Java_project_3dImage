@@ -2,6 +2,11 @@ package geometries;
 
 import primitives.*;
 
+import java.util.List;
+
+import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
+
 public class Plane implements Geometry {
     Point3D _p;
     Vector _normal;
@@ -46,5 +51,23 @@ public class Plane implements Geometry {
     @Override
     public String toString() {
         return " The Plane's point is: " + _p + ", and the normal is: " + _normal + '.';
+    }
+
+    @Override
+    public List<Point3D> findIntersections(Ray ray) {
+        Vector p0Q;
+        try {
+            p0Q = _p.subtract(ray.get_origin());
+        } catch (IllegalArgumentException e) {
+            return null; // ray starts from point Q - no intersections
+        }
+
+        double nv = _normal.dotProduct(ray.get_vector());
+        if (isZero(nv)) // ray is parallel to the plane - no intersections
+            return null;
+
+        double t = alignZero(_normal.dotProduct(p0Q) / nv);
+
+        return t <= 0 ? null : List.of(ray.getTargetPoint(t));
     }
 }

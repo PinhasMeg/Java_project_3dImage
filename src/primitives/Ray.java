@@ -3,6 +3,7 @@ package primitives;
 import java.util.Objects;
 
 import static java.lang.StrictMath.sqrt;
+import static primitives.Util.isZero;
 
 /**
  * This class contains a 3Dpoint and a vector
@@ -83,5 +84,13 @@ public class Ray {
                 + (point._y.get() - vector._head._y.get()) * (point._y.get() - vector._head._y.get())
                 + (point._z.get() - vector._head._z.get()) * (point._z.get() - vector._head._z.get())
         );
+    }
+
+    /**
+     * @param length
+     * @return
+     */
+    public Point3D getTargetPoint(double length) {
+        return isZero(length) ? _origin : new Point3D(_origin).add(_vector.scale(length));
     }
 }

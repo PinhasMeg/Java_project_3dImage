@@ -3,31 +3,31 @@ package geometries;
 import primitives.Point3D;
 import primitives.Vector;
 
+import static primitives.Util.isZero;
+
 public abstract class RadialGeometry implements Geometry {
     double _radius;
 
     /**
-     * constructor with parameter
-     *
-     * @param radius
+     * @param _radius
      */
-    public RadialGeometry(double radius) {
-        _radius = radius;
+    public RadialGeometry(double _radius) {
+        if (isZero(_radius) || (_radius < 0.0))
+            throw new IllegalArgumentException("radius " + _radius + " is not valid");
+        this._radius = _radius;
     }
 
     /**
-     * copy constructor
      *
-     * @param radialGeometry
+     * @param other
      */
-    public RadialGeometry(RadialGeometry radialGeometry) {
-        _radius = radialGeometry._radius;
+    public RadialGeometry(RadialGeometry other) {
+        this._radius = other._radius;
     }
 
     /**
-     * get the radius
      *
-     * @return double
+     * @return
      */
     public double get_radius() {
         return _radius;

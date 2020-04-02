@@ -2,8 +2,7 @@ package geometries;
 
 import primitives.*;
 
-import java.util.Objects;
-
+import java.util.List;
 import static primitives.Util.isZero;
 
 public class Tube extends RadialGeometry {
@@ -81,5 +80,10 @@ public class Tube extends RadialGeometry {
             return (Util.isZero(this._radius - other._radius) && _axisRay.get_origin().equals((_axisRay.get_origin())));
         }
         throw new IllegalArgumentException("direction cross product with parameter.direction == Vector(0,0,0)");
+    }
+
+    @Override
+    public List<Point3D> findIntersections(Ray ray) {
+        return null;
     }
 }
