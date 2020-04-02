@@ -13,7 +13,6 @@ class CylinderTest {
      */
     @Test
     void getNormal() {
-        // ============ Equivalence Partitions Tests ==============
 
         Point3D point = new Point3D(0.0, 0.0, 0.0);
         Vector vector = new Vector(1.0, 0.0, 0.0);
@@ -21,6 +20,8 @@ class CylinderTest {
         double radius = 2;
         double height = 2;
         Cylinder cylinder = new Cylinder(radius, ray, height);
+
+        // ============ Equivalence Partitions Tests ==============
 
         // point is on the side
         Point3D p1 = new Point3D(1.0, 2.0, 0.0);
@@ -39,5 +40,20 @@ class CylinderTest {
         Vector normal3 = cylinder.getNormal(p3);
         Vector ExpResult3 = new Vector(1.0, 0.0, 0.0);
         assertEquals(normal3, ExpResult3);
+
+        // =============== Boundary Values Tests ==================
+
+        // point is on the base beside the origin on the limit with the side of the Cylinder
+        Point3D p4 = new Point3D(0.0, 2.0, 0.0);
+        Vector normal4 = cylinder.getNormal(p4);
+        Vector ExpResult4 = new Vector(1.0, 0.0, 0.0);
+        assertEquals(normal4, ExpResult4);
+
+        // point is on the other base of the Cylinder on the limit with the side of the Cylinder
+        Point3D p5 = new Point3D(2.0, 2.0, 0.0);
+        Vector normal5 = cylinder.getNormal(p5);
+        Vector ExpResult5 = new Vector(1.0, 0.0, 0.0);
+        assertEquals(normal5, ExpResult5);
+
     }
 }
