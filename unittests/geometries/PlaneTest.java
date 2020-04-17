@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import primitives.*;
 
 import java.util.List;
-
+import static java.lang.System.out;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlaneTest {
@@ -19,7 +19,6 @@ class PlaneTest {
                 new Point3D(1.0, 0.0, 0.0),
                 new Point3D(0.0, 0.0, 1.0));
         Vector v1 = p1.getNormal();
-
 
         Plane p2 = new Plane(
                 new Point3D(0.0, 0.0, 1.0),
@@ -56,26 +55,41 @@ class PlaneTest {
 
         // TC02: Ray doesn't intersect the plane (0 points)
         assertNull(plane.findIntersections(new Ray(new Point3D(0.5, 0, 0), new Vector(-5, 0, 0))),
-                "Sphere behind Ray");
+                "Ray intersect the Plane, not as expected! ");
 
         // =============== Boundary Values Tests ==================
 
         // **** Group: Ray is parallel to the plane
-        // TC03: Ray is include in the plane (1 points)
+        // TC03: Ray is include in the plane (0 points)
+        assertNull(plane.findIntersections(new Ray(new Point3D(0, 0, 1), new Vector(1, -1, 0))),
+                "Ray intersect the Plane, not as expected! ");
 
         // TC04: Ray doesn't include in the plane (0 points)
+        assertNull(plane.findIntersections(new Ray(new Point3D(0.5, 0, -1), new Vector(1, -1, 0))),
+                "Ray intersect the Plane, not as expected! ");
 
-        // **** Group: Ray's line goes through the center
-        // TC13: Ray starts before the sphere (2 points)
-        // TC14: Ray starts at sphere and goes inside (1 points)
-        // TC15: Ray starts inside (1 points)
-        // TC16: Ray starts at the center (1 points)
-        // TC17: Ray starts at sphere and goes outside (0 points)
-        // TC18: Ray starts after sphere (0 points)
+        // **** Group: Ray is orthogonal to the plane
+        // TC05: P0 is before the Plane (1 points)
+        assertEquals(List.of(new Point3D(0.3333333333333335, 0.3333333333333335, 0.3333333333333335)),
+                plane.findIntersections(new Ray(new Point3D(-1, -1, -1),
+                        new Vector(0.5773502691896258, 0.5773502691896258, 0.5773502691896258))),
+                "Ray not intersected the plane as expected");
+        // TC06: P0 is in the Plane (0 points)
+        assertNull(plane.findIntersections(new Ray(new Point3D(0, 0, 1),
+                        new Vector(0.5773502691896258, 0.5773502691896258, 0.5773502691896258))),
+                "Ray intersect the Plane, not as expected! ");
+        // TC07: P0 is after the Plane (0 points)
+        assertNull(plane.findIntersections(new Ray(new Point3D(2, 2, 2),
+                        new Vector(0.5773502691896258, 0.5773502691896258, 0.5773502691896258))),
+                "Ray intersect the Plane, not as expected! ");
 
-        // **** Group: Ray's line is tangent to the sphere (all tests 0 points)
-        // TC19: Ray starts before the tangent point
-
-
+        // TC08: Ray is neither orthogonal nor parallel to the plane and begins at the plane
+        //  P0 is in the plane, but not the ray (0 points)
+        assertNull(plane.findIntersections(new Ray(new Point3D(0, 0, 1), new Vector(1, 0, 0))),
+                "Ray intersect the Plane, not as expected! ");
+        // TC09: Ray is neither orthogonal nor parallel to the plane and
+        //  Ray begins in the same point which appears as reference point in the plane (Q)(0 points)
+        assertNull(plane.findIntersections(new Ray(new Point3D(1, 0, 0), new Vector(1, 0, 0))),
+                "Ray intersect the Plane, not as expected! ");
     }
 }
