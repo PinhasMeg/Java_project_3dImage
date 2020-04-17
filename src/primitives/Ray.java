@@ -22,12 +22,8 @@ public class Ray {
      * @param point  is initialize
      */
     public Ray(Point3D point, Vector vector) {
-        if (lengthRay(point, vector) != 1)
-            throw new IllegalArgumentException(" This vector is not a unit vector! ");
-        else {
-            this._origin = point;
-            this._vector = vector;
-        }
+        this._origin = new Point3D(point);
+        this._vector = new Vector(vector.normalized());
     }
 
     /**
@@ -70,20 +66,6 @@ public class Ray {
         Ray ray = (Ray) o;
         return _origin.equals(ray._origin) &&
                 _vector.equals(ray._vector);
-    }
-
-    /**
-     * this function calculates the length of the ray
-     *
-     * @param point
-     * @param vector
-     * @return the size (double) of the ray
-     */
-    public double lengthRay(Point3D point, Vector vector) {
-        return sqrt((point._x.get() - vector._head._x.get()) * (point._x.get() - vector._head._x.get())
-                + (point._y.get() - vector._head._y.get()) * (point._y.get() - vector._head._y.get())
-                + (point._z.get() - vector._head._z.get()) * (point._z.get() - vector._head._z.get())
-        );
     }
 
     /**
