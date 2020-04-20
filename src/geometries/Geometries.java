@@ -8,11 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Geometries implements Intersectable {
-    private List<Intersectable> _geometries;
-
-    public Geometries() {
-        _geometries = new ArrayList<Intersectable>();
-    }
+    private List<Intersectable> _geometries = new ArrayList<Intersectable>();
 
     public Geometries(Intersectable... _geometries) {
         add(_geometries);
@@ -25,15 +21,17 @@ public class Geometries implements Intersectable {
     }
 
     /**
+     * Na le Hasbir befrotrot
+     *
      * @param ray
-     * @return
+     * @return list of Point3D that intersect the osef
      */
     @Override
     public List<Point3D> findIntersections(Ray ray) {
         List<Point3D> intersections = null;
 
-        for (Intersectable geometry : _geometries) {
-            List<Point3D> tempIntersections = geometry.findIntersections(ray);
+        for (Intersectable geo : _geometries) {
+            List<Point3D> tempIntersections = geo.findIntersections(ray);
             if (tempIntersections != null) {
                 if (intersections == null)
                     intersections = new ArrayList<Point3D>();
@@ -41,6 +39,5 @@ public class Geometries implements Intersectable {
             }
         }
         return intersections;
-
     }
 }
