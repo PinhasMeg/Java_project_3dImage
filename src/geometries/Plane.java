@@ -35,8 +35,8 @@ public class Plane implements Geometry {
      * @param vector
      */
     public Plane(Point3D point, Vector vector) {
-        _p = point;
-        _normal = vector;
+        _p = new Point3D(point);
+        _normal = new Vector(vector);
     }
 
     @Override
