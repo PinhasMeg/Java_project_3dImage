@@ -40,4 +40,13 @@ public class Geometries implements Intersectable {
         }
         return intersections;
     }
+
+    /**
+     * @param intersectables
+     */
+    public void remove(Intersectable... intersectables) {
+        for (Intersectable geo : _geometries) {
+            _geometries.remove(geo);
+        }
+    }
 }

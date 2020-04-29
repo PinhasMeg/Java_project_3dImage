@@ -13,11 +13,6 @@ public class Camera {
     Vector _vUp;
     Vector _vRight;
 
-    /**
-     * @param _p0
-     * @param _vTo
-     * @param _vUp
-     */
     public Camera(Point3D _p0, Vector _vTo, Vector _vUp) {
 
         //if the the vectors are not orthogonal, throw exception.
@@ -32,16 +27,23 @@ public class Camera {
 
     }
 
-    /**
-     * @param nX             coordinate
-     * @param nY             coordinate
-     * @param j              index of the pixel
-     * @param i              index of the pixel
-     * @param screenDistance
-     * @param screenWidth
-     * @param screenHeight
-     * @return the RAY through the pixel
-     */
+
+    public Point3D get_p0() {
+        return new Point3D(_p0);
+    }
+
+    public Vector get_vTo() {
+        return new Vector(_vTo);
+    }
+
+    public Vector get_vUp() {
+        return new Vector(_vUp);
+    }
+
+    public Vector get_vRight() {
+        return new Vector(_vRight);
+    }
+
     public Ray constructRayThroughPixel(int nX, int nY,
                                         int j, int i, double screenDistance,
                                         double screenWidth, double screenHeight) {
@@ -49,6 +51,7 @@ public class Camera {
             throw new IllegalArgumentException("distance cannot be 0");
         }
 
+        Point3D Pc = _p0.add(_vTo.scale(screenDistance));
 
         double Ry = screenHeight / nY;
         double Rx = screenWidth / nX;
@@ -56,7 +59,7 @@ public class Camera {
         double yi = ((i - nY / 2d) * Ry + Ry / 2d);
         double xj = ((j - nX / 2d) * Rx + Rx / 2d);
 
-        Point3D Pij = _p0.add(_vTo.scale(screenDistance));
+        Point3D Pij = Pc;
 
         if (!isZero(xj)) {
             Pij = Pij.add(_vRight.scale(xj));
@@ -69,41 +72,5 @@ public class Camera {
 
         return new Ray(_p0, Vij);
 
-    }
-
-    /**
-     * get_p0
-     *
-     * @return
-     */
-    public Point3D get_p0() {
-        return new Point3D(_p0);
-    }
-
-    /**
-     * get_vTo
-     *
-     * @return
-     */
-    public Vector get_vTo() {
-        return new Vector(_vTo);
-    }
-
-    /**
-     * get_vUp
-     *
-     * @return
-     */
-    public Vector get_vUp() {
-        return new Vector(_vUp);
-    }
-
-    /**
-     * get_vRight
-     *
-     * @return
-     */
-    public Vector get_vRight() {
-        return new Vector(_vRight);
     }
 }
