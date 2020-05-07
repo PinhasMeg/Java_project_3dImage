@@ -3,19 +3,18 @@ package elements;
 import primitives.Color;
 
 public class AmbientLight {
-    public java.awt.Color getIntensity() {
-        return _intensity.getColor();
+    private final Color _iA;
+//    double _kA;
+
+    public AmbientLight(Color iA, double kA) {
+        _iA = iA.scale(kA);
     }
 
-    private Color _intensity;
-
-    public void setIntensity(Color _intensity) {
-        this._intensity = _intensity;
+    public AmbientLight(Color iA) {
+        this(iA, 1.d);
     }
 
-    public AmbientLight(Color _intensity, int ka) {
-        // ka is always 1 so we don't use it
-        this._intensity = _intensity;
+    public Color getIntensity() {
+        return _iA;
     }
-
 }

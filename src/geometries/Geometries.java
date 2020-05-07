@@ -20,6 +20,12 @@ public class Geometries implements Intersectable {
         }
     }
 
+    public void addAll(Intersectable... geometries) {
+        for (Intersectable geo : geometries) {
+            _geometries.add(geo);
+        }
+    }
+
     /**
      * Na le Hasbir befrotrot
      *

@@ -17,14 +17,17 @@ import javax.imageio.stream.*;
  * @author Dan
  */
 public class ImageWriter {
-    private double _imageWidth, _imageHeight;
-    private int _nX, _nY;
+    private final double _imageWidth;
+    private final double _imageHeight;
+    private final int _nX;
+    private final int _nY;
 
     private final String PROJECT_PATH = System.getProperty("user.dir");
 
-    private BufferedImage _image;
+    private final BufferedImage _image;
 
-    private String _imageName;
+    private final String _imageName;
+    private Color _background;
 
     // ***************** Constructors ********************** //
 
@@ -44,7 +47,6 @@ public class ImageWriter {
         _nX = nX;
         _nY = nY;
 
-//        _image = new BufferedImage((int)_imageWidth, (int)_imageHeight, BufferedImage.TYPE_INT_RGB);
         _image = new BufferedImage(_nX, _nY, BufferedImage.TYPE_INT_RGB);
     }
 
