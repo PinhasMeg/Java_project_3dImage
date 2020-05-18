@@ -1,31 +1,55 @@
 package geometries;
 
-import primitives.Point3D;
-import primitives.Vector;
+import primitives.*;
 
 import static primitives.Util.isZero;
 
-public abstract class RadialGeometry implements Geometry {
+/**
+ * RadialGeometry is an abstract class that defines
+ * all radial geometries.
+ */
+public abstract class RadialGeometry extends Geometry {
     double _radius;
 
     /**
-     * @param _radius
+     * constructor for a new extended  RadialGeometry object.
+     *
+     * @param radius   the radius of the RadialGeometry
+     * @param material the material of the RadialGeometry
+     * @throws Exception in case of negative or zero radius
      */
-    public RadialGeometry(double _radius) {
-        if (isZero(_radius) || (_radius < 0.0))
-            throw new IllegalArgumentException("radius " + _radius + " is not valid");
-        this._radius = _radius;
+    public RadialGeometry(Color emissionLight, double radius, Material material) {
+        super(emissionLight, material);
+        _radius = radius;
     }
 
     /**
-     *
+     * @param emissionLight
+     * @param radius
+     */
+    public RadialGeometry(Color emissionLight, double radius) {
+        super(emissionLight);
+        _radius = radius;
+    }
+
+    /**
+     * @param radius
+     */
+    public RadialGeometry(double radius) {
+        super();
+        _radius = radius;
+    }
+
+    /**
      * @param other
      */
     public RadialGeometry(RadialGeometry other) {
-        this._radius = other._radius;
+        super(other._emission, other._material);
+        _radius = other._radius;
     }
 
     /**
+     * get the radius
      *
      * @return
      */

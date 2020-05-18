@@ -1,18 +1,52 @@
 package geometries;
 
-import primitives.Point3D;
-import primitives.Ray;
-import primitives.Vector;
+import primitives.*;
 
+import java.util.LinkedList;
 import java.util.List;
+
+import geometries.Intersectable.*;
 
 import static primitives.Util.isZero;
 
 public class Triangle extends Polygon {
 
+    /**
+     * constructor
+     *
+     * @param emissionLight
+     * @param material
+     * @param p1
+     * @param p2
+     * @param p3
+     */
+    public Triangle(Color emissionLight, Material material, Point3D p1, Point3D p2, Point3D p3) {
+        super(emissionLight, material, p1, p2, p3);
+    }
+
+    /**
+     * constructor
+     *
+     * @param emissionLight
+     * @param p1
+     * @param p2
+     * @param p3
+     */
+    public Triangle(Color emissionLight, Point3D p1, Point3D p2, Point3D p3) {
+        super(emissionLight, p1, p2, p3);
+    }
+
+    /**
+     * constructor
+     *
+     * @param p1
+     * @param p2
+     * @param p3
+     */
     public Triangle(Point3D p1, Point3D p2, Point3D p3) {
         super(p1, p2, p3);
     }
+
 
     @Override
     public String toString() {
@@ -25,8 +59,8 @@ public class Triangle extends Polygon {
     }
 
     @Override
-    public List<Point3D> findIntersections(Ray ray) {
-        List<Point3D> intersections = _plane.findIntersections(ray);
+    public List<GeoPoint> findIntersections(Ray ray) {
+        List<GeoPoint> intersections = _plane.findIntersections(ray);
         if (intersections == null) return null;
 
         Point3D p0 = ray.get_origin();
