@@ -51,7 +51,7 @@ class PlaneTest {
         // TC01: Ray intersects the plane (1 points)
         assertEquals(List.of(new Point3D(1, 0, 0)),
                 plane.findIntersections(new Ray(new Point3D(-3, 0.0, 0), new Vector(6, 0, 0))),
-                "Ray not intersected the plane as expected");
+                "Ray did not intersect the plane as expected");
 
         // TC02: Ray doesn't intersect the plane (0 points)
         assertNull(plane.findIntersections(new Ray(new Point3D(0.5, 0, 0), new Vector(-5, 0, 0))),

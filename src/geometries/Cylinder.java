@@ -8,32 +8,26 @@ import static primitives.Util.isZero;
 public class Cylinder extends Tube {
     public double _height;
 
-    /**
-     * constructor with parameters
-     *
-     * @param radius
-     * @param axisRay
-     * @param height
-     */
-    public Cylinder(double radius, Ray axisRay, double height) {
-        super(radius, axisRay);
-        if (height == 0)
-            throw new IllegalArgumentException("ERROR: Height Zero is not valid!");
-        else this._height = height;
+    public Cylinder(Color emissionLight, Material material, double radius, Ray ray, double _height) {
+        super(emissionLight, material, radius, ray);
+        this._height = _height;
+    }
+
+    public Cylinder(Color emissionLight, double radius, Ray ray, double _height) {
+        super(emissionLight, radius, ray);
+        this._height = _height;
     }
 
     /**
-     * constructor with parameters
+     * Cylinder constructor
      *
-     * @param radialGeometry
-     * @param axisRay
-     * @param height
+     * @param _radius
+     * @param _ray
+     * @param _height
      */
-    public Cylinder(RadialGeometry radialGeometry, Ray axisRay, double height) {
-        super(radialGeometry, axisRay);
-        if (height == 0)
-            throw new IllegalArgumentException("ERROR: Height Zero is not valid!");
-        else this._height = height;
+    public Cylinder(double _radius, Ray _ray, double _height) {
+        super(_radius, _ray);
+        this._height = _height;
     }
 
     /**

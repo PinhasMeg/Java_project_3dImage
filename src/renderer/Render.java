@@ -92,38 +92,94 @@ public class Render {
     /**
      * Calculate the color intensity in a point
      *
-     * @param gp intersection the point for which the color is required
+     * @param coloredPoint intersection the point for which the color is required
      * @return the color intensity
      */
-    private Color calcColor(GeoPoint gp) {
+    private Color calcColor(GeoPoint coloredPoint) {
+        List<LightSource> lightSources = _scene.getLightsSources();
         Color result = _scene.getAmbientLight().getIntensity();
-        result = result.add(gp.getGeometry().getEmissionLight());
-        List<LightSource> lights = _scene.getLightSources();
+        result = result.add(coloredPoint.getGeometry().getEmissionLight());
 
-        Vector v = gp.getPoint().subtract(_scene.getCamera().getP0()).normalize();
-        Vector n = gp.getGeometry().getNormal(gp.getPoint());
+        Vector v = coloredPoint.getPoint().subtract(_scene.getCamera().getP0()).normalize();
+        Vector n = coloredPoint.getGeometry().getNormal(coloredPoint.getPoint());
 
-        Material material = gp.getGeometry().getMaterial();
+        Material material = coloredPoint.getGeometry().getMaterial();
         int nShininess = material.getnShininess();
         double kd = material.getKd();
         double ks = material.getKs();
-        if (_scene.getLightSources() != null) {
-            for (LightSource lightSource : lights) {
 
-                Vector l = lightSource.getL(gp.getPoint());
+        if (lightSources != null) {
+            for (LightSource lightSource : lightSources) {
+                Vector l = lightSource.getL(coloredPoint.getPoint());
                 double nl = alignZero(n.dotProduct(l));
                 double nv = alignZero(n.dotProduct(v));
 
                 if (sign(nl) == sign(nv)) {
-                    Color ip = lightSource.getIntensity(gp.getPoint());
+                    Color ip = lightSource.getIntensity(coloredPoint.getPoint());
                     result = result.add(
                             calcDiffusive(kd, nl, ip),
-                            calcSpecular(ks, l, n, nl, v, nShininess, ip)
-                    );
+                            calcSpecular(ks, l, n, nl, v, nShininess, ip));
                 }
             }
         }
-
         return result;
+    }
+
+    /**
+     * Calculate Specular component of light reflection.
+     *
+     * @param ks         specular component coef
+     * @param l          direction from light to point
+     * @param n          normal to surface at the point
+     * @param nl         dot-product n*l
+     * @param v          direction from point of view to point
+     * @param nShininess shininess level
+     * @param ip         light intensity at the point
+     * @return specular component light effect at the point
+     * <p>
+     * Finally, the Phong model has a provision for a highlight, or specular, component, which reflects light in a
+     * shiny way. This is defined by [rs,gs,bs](-V.R)^p, where R is the mirror reflection direction vector
+     * (and also used for ray tracing), and where p is a specular power. The higher the value of p, the shinier
+     * the surface.
+     */
+    private Color calcSpecular(double ks, Vector l, Vector n, double nl, Vector v, int nShininess, Color ip) {
+        double p = nShininess;
+
+        Vector R = l.add(n.scale(-2 * nl)); // nl must not be zero!
+        double minusVR = -alignZero(R.dotProduct(v));
+        if (minusVR <= 0) {
+            return Color.BLACK; // view from direction opposite to r vector
+        }
+        // [rs,gs,bs](-V.R)^p
+        return ip.scale(ks * Math.pow(minusVR, p));
+    }
+
+    /**
+     * Calculate Diffusive component of light reflection.
+     *
+     * @param kd diffusive component coef
+     * @param nl dot-product n*l
+     * @param ip light intensity at the point
+     * @return diffusive component of light reflection
+     * <p>
+     * The diffuse component is dot product n•L. It approximates light, originally
+     * from light source L, reflecting from a surface which is diffuse, or non-glossy. One example of a non-glossy
+     * surface is paper. In general, you'll also want this to have a non-gray color value,
+     * so this term would in general be a color defined as: [rd,gd,bd](n•L)
+     */
+    private Color calcDiffusive(double kd, double nl, Color ip) {
+        if (nl < 0) {
+            nl = -nl;
+        }
+
+        return ip.scale(nl * kd);
+    }
+
+    /**
+     * @param val
+     * @return
+     */
+    private boolean sign(double val) {
+        return (val > 0d);
     }
 }

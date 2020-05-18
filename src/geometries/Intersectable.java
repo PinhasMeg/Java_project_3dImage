@@ -13,27 +13,21 @@ import java.util.Objects;
 public interface Intersectable {
 
     /**
-     * @param ray ray pointing toward a Geometry
-     * @return List<GeoPoint> return values
-     */
-    List<GeoPoint> findIntersections(Ray ray);
-
-    /**
      * GeoPoint is just a tuple holding
      * references to a specific point in a specific geometry
      */
     public static class GeoPoint {
 
         protected final Geometry _geometry;
-        protected final Point3D point;
+        protected final Point3D _point;
 
         public GeoPoint(Geometry _geometry, Point3D pt) {
             this._geometry = _geometry;
-            point = pt;
+            _point = pt;
         }
 
         public Point3D getPoint() {
-            return point;
+            return _point;
         }
 
         public Geometry getGeometry() {
@@ -46,8 +40,13 @@ public interface Intersectable {
             if (o == null || getClass() != o.getClass()) return false;
             GeoPoint geoPoint = (GeoPoint) o;
             return _geometry.equals(geoPoint._geometry) &&
-                    point.equals(geoPoint.point);
+                    _point.equals(geoPoint._point);
         }
     }
 
+    /**
+     * @param ray ray pointing toward a Geometry
+     * @return List<GeoPoint> return values
+     */
+    List<GeoPoint> findIntersections(Ray ray);
 }

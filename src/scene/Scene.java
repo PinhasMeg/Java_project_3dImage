@@ -124,6 +124,9 @@ public class Scene {
         for (LightSource i : light) {
             _lights.add(i);
         }
+    }
 
+    public List<LightSource> getLightsSources() {
+        return _lights;
     }
 }
