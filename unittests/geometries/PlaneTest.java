@@ -2,7 +2,9 @@ package geometries;
 
 import org.junit.jupiter.api.Test;
 import primitives.*;
+import geometries.Intersectable.*;
 
+import java.util.LinkedList;
 import java.util.List;
 import static java.lang.System.out;
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,9 +51,12 @@ class PlaneTest {
         // ============ Equivalence Partitions Tests ==============
 
         // TC01: Ray intersects the plane (1 points)
-        assertEquals(List.of(new Point3D(1, 0, 0)),
-                plane.findIntersections(new Ray(new Point3D(-3, 0.0, 0), new Vector(6, 0, 0))),
-                "Ray did not intersect the plane as expected");
+        List<Point3D> points = new LinkedList<>();
+        List<GeoPoint> results = plane.findIntersections(new Ray(new Point3D(-3, 0.0, 0), new Vector(6, 0, 0)));
+        for (GeoPoint geo : results) {
+            points.add(geo._point);
+        }
+        assertEquals(List.of(new Point3D(1, 0, 0)), points, "Ray did not intersect the plane as expected");
 
         // TC02: Ray doesn't intersect the plane (0 points)
         assertNull(plane.findIntersections(new Ray(new Point3D(0.5, 0, 0), new Vector(-5, 0, 0))),
@@ -70,9 +75,13 @@ class PlaneTest {
 
         // **** Group: Ray is orthogonal to the plane
         // TC05: P0 is before the Plane (1 points)
-        assertEquals(List.of(new Point3D(0.3333333333333335, 0.3333333333333335, 0.3333333333333335)),
-                plane.findIntersections(new Ray(new Point3D(-1, -1, -1),
-                        new Vector(0.5773502691896258, 0.5773502691896258, 0.5773502691896258))),
+        results = plane.findIntersections(new Ray(new Point3D(-1, -1, -1),
+                new Vector(0.5773502691896258, 0.5773502691896258, 0.5773502691896258)));
+        points.clear();
+        for (GeoPoint geo : results) {
+            points.add(geo._point);
+        }
+        assertEquals(List.of(new Point3D(0.3333333333333335, 0.3333333333333335, 0.3333333333333335)), points,
                 "Ray not intersected the plane as expected");
         // TC06: P0 is in the Plane (0 points)
         assertNull(plane.findIntersections(new Ray(new Point3D(0, 0, 1),

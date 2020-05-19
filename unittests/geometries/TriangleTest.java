@@ -3,9 +3,10 @@ package geometries;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+import geometries.Intersectable.*;
 import primitives.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 class TriangleTest {
@@ -35,8 +36,12 @@ class TriangleTest {
         // ============ Equivalence Partitions Tests ==============
 
         // TC01: Ray intersects inside the triangle (1 points)
-        assertEquals(List.of(new Point3D(0.1, 1.0, 0.1)),
-                triangle.findIntersections(new Ray(new Point3D(0.1, -3, 0.1), new Vector(0.0, 1.0, 0.0))),
+        List<Point3D> points = new LinkedList<>();
+        List<GeoPoint> results = triangle.findIntersections(new Ray(new Point3D(0.1, -3, 0.1), new Vector(0.0, 1.0, 0.0)));
+        for (GeoPoint geo : results) {
+            points.add(geo._point);
+        }
+        assertEquals(List.of(new Point3D(0.1, 1.0, 0.1)), points,
                 "Ray not intersected the triangle as expected");
 
         // TC02: Ray intersects outside against edge of the triangle (0 points)
