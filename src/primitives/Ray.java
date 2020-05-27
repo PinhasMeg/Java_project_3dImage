@@ -4,12 +4,13 @@ import java.util.Objects;
 
 import static java.lang.StrictMath.sqrt;
 import static primitives.Util.isZero;
-
 /**
  * This class contains a 3Dpoint and a vector
  */
 
 public class Ray {
+
+    private static final double DELTA = 0.1;
     Point3D _origin;
     Vector _vector;
 
@@ -27,6 +28,21 @@ public class Ray {
     }
 
     /**
+     * @param point
+     * @param direction
+     * @param normal
+     */
+    public Ray(Point3D point, Vector direction, Vector normal) {
+        //point + normal.scale(±DELTA)
+        _vector = new Vector(direction).normalized();
+
+        double nv = normal.dotProduct(direction);
+
+        Vector normalDelta = normal.scale((nv > 0 ? DELTA : -DELTA));
+        _origin = point.add(normalDelta);
+    }
+
+    /**
      * copy constructor
      *
      * @param r is a Ray
@@ -34,24 +50,6 @@ public class Ray {
     public Ray(Ray r) {
         this._origin = r._origin;
         this._vector = r._vector;
-    }
-
-    /**
-     * this function returns the value of the Point3D _origin
-     *
-     * @return _origin
-     */
-    public Point3D get_origin() {
-        return _origin;
-    }
-
-    /**
-     * this function returns the vector of the Ray
-     *
-     * @return _vector
-     */
-    public Vector get_vector() {
-        return _vector;
     }
 
     @Override
@@ -75,4 +73,26 @@ public class Ray {
     public Point3D getTargetPoint(double length) {
         return isZero(length) ? _origin : new Point3D(_origin).add(_vector.scale(length));
     }
+
+    /**
+     * Getter for the direction of the ray that is
+     * represented by this object.
+     *
+     * @return A new Vector that represents the
+     * direction of the ray that is
+     * represented by this object.
+     */
+    public Vector get_vector() {
+        return new Vector(_vector);
+    }
+
+    /**
+     * this function returns the value of the Point3D _origin
+     *
+     * @return _origin
+     */
+    public Point3D get_origin() {
+        return new Point3D(_origin);
+    }
+
 }
