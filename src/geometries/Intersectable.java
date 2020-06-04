@@ -4,7 +4,6 @@ import primitives.*;
 
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Intersectable is a common interface for all geometries that are able
@@ -13,40 +12,48 @@ import java.util.Objects;
 public interface Intersectable {
 
     /**
-     * GeoPoint is just a tuple holding
-     * references to a specific point in a specific geometry
+     * @param ray ray pointing toward a Gepmtry
+     * @return List<GeoPoint> return values
      */
-    public static class GeoPoint {
+    default List<GeoPoint> findIntersections(Ray ray) {
+        return findIntersections(ray, Double.POSITIVE_INFINITY);
+    }
 
-        protected final Geometry _geometry;
-        protected final Point3D _point;
+    List<GeoPoint> findIntersections(Ray ray, double maxDistance);
 
-        public GeoPoint(Geometry _geometry, Point3D pt) {
-            this._geometry = _geometry;
-            _point = pt;
+    /**
+     * GeoPoint is just a tuple holding
+     * references to a specific point ain a specific geometry
+     */
+    class GeoPoint {
+
+        protected Geometry _geometry;
+        protected Point3D _point;
+
+        public GeoPoint(Geometry geometry, Point3D pt) {
+            this._geometry = geometry;
+            this._point = pt;
         }
 
         public Point3D getPoint() {
             return _point;
         }
 
-        public Geometry getGeometry() {
-            return _geometry;
-        }
-
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
+
             GeoPoint geoPoint = (GeoPoint) o;
-            return _geometry.equals(geoPoint._geometry) &&
-                    _point.equals(geoPoint._point);
+
+            return ((_geometry.equals(geoPoint._geometry)) && (_point.equals(geoPoint._point)));
+        }
+
+        public Geometry getGeometry() {
+            return _geometry;
         }
     }
+    //end of GeoPoint
 
-    /**
-     * @param ray ray pointing toward a Geometry
-     * @return List<GeoPoint> return values
-     */
-    List<GeoPoint> findIntersections(Ray ray);
 }
+//end of Intersectable

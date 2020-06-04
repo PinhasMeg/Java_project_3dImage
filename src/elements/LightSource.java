@@ -4,8 +4,6 @@ import primitives.*;
 
 /**
  * Interface for common actions of light sources
- *
- * @author Dan Zilberstein
  */
 public interface LightSource {
     /**

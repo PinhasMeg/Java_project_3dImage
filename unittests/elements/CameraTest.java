@@ -6,7 +6,7 @@ import primitives.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * @author Dan Zilberstein
+ * Test for Camera
  */
 class CameraTest {
 

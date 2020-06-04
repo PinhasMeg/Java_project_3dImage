@@ -16,8 +16,8 @@ import static primitives.Util.alignZero;
  */
 public class Render {
 
-    private static final int MAX_CALC_COLOR_LEVEL = 10;
-    private static final double MIN_CALC_COLOR_K = 0.00001;
+    private static final int MAX_CALC_COLOR_LEVEL = 20;
+    private static final double MIN_CALC_COLOR_K = 0.0000001;
     private final ImageWriter _imageWriter;
     private final Scene _scene;
 

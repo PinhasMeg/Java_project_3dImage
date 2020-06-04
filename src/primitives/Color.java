@@ -6,8 +6,6 @@ package primitives;
  * non-negative RGB values. The colors are maintained without upper limit of
  * 255. Some additional operations are added that are useful for manipulating
  * light's colors
- *
- * @author Dan Zilberstein
  */
 public class Color {
     /**
@@ -17,6 +15,8 @@ public class Color {
     private double _r = 0.0, _g = 0.0, _b = 0.0;
 
     public final static Color BLACK = new Color();
+    public final static Color WHITE = new Color(255, 255, 255);
+    public final static Color GRAY = new Color(125, 125, 125);
 
     /**
      * Default constructor - to generate Black Color (privately)

@@ -22,7 +22,7 @@ public class ShadowTests {
                                 new Vector(0, 0, 1),
                                 new Vector(0, -1, 0)))
                 .addDistance(1000)
-                .addBackground(Color.BLACK)
+                .addBackground(Color.WHITE)
                 .build();
 
         scene.addGeometries(

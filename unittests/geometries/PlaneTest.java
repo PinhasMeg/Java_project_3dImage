@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PlaneTest {
 
     /**
-     * Test method for {@link Plane#getNormal()}
+     * Test method for {@link Plane#getNormal(Point3D)}
      */
     @Test
     void testGetNormal() {
@@ -20,20 +20,20 @@ class PlaneTest {
                 new Point3D(0.0, 1.0, 0.0),
                 new Point3D(1.0, 0.0, 0.0),
                 new Point3D(0.0, 0.0, 1.0));
-        Vector v1 = p1.getNormal();
+        Vector v1 = p1.getNormal(new Point3D(0.0, 1.0, 0.0));
 
         Plane p2 = new Plane(
                 new Point3D(0.0, 0.0, 1.0),
                 new Point3D(1.0, 0.0, 0.0),
                 new Point3D(0.0, 1.0, 0.0));
-        Vector v2 = p2.getNormal();
+        Vector v2 = p2.getNormal(new Point3D(0.0, 1.0, 0.0));
 
         Plane p3 = new Plane(
 
                 new Point3D(1.0, 0.0, 0.0),
                 new Point3D(0.0, 0.0, 1.0),
                 new Point3D(0.0, 1.0, 0.0));
-        Vector v3 = p3.getNormal();
+        Vector v3 = p3.getNormal(new Point3D(0.0, 1.0, 0.0));
 
         assertNotEquals(v1, v2);
         assertEquals(v1, v3, "not same direction!");

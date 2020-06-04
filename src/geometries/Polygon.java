@@ -8,22 +8,17 @@ import java.util.List;
 
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
-
 /**
  * Polygon class represents two-dimensional polygon in 3D Cartesian coordinate
  * system
  *
  * @author Dan
  */
-public class Polygon extends Geometry {
+public class Polygon extends FlatGeometry {
     /**
      * List of polygon's vertices
      */
     protected List<Point3D> _vertices;
-    /**
-     * Associated plane in which the polygon lays
-     */
-    protected Plane _plane;
 
     /**
      * Polygon constructor based on vertices list. The list must be ordered by edge
@@ -59,7 +54,7 @@ public class Polygon extends Geometry {
         _plane = new Plane(vertices[0], vertices[1], vertices[2]);
         if (vertices.length == 3) return; // no need for more tests for a Triangle
 
-        Vector n = _plane.getNormal();
+        Vector n = _plane.getNormal(null);
 
         // Subtracting any subsequent points will throw an IllegalArgumentException
         // because of Zero Vector if they are in the same point
@@ -99,12 +94,12 @@ public class Polygon extends Geometry {
 
     @Override
     public Vector getNormal(Point3D point) {
-        return _plane.getNormal();
+        return _plane.getNormal(null);
     }
 
     @Override
-    public List<GeoPoint> findIntersections(Ray ray) {
-        List<GeoPoint> planeIntersections = _plane.findIntersections(ray);
+    public List<GeoPoint> findIntersections(Ray ray, double maxDistance) {
+        List<GeoPoint> planeIntersections = _plane.findIntersections(ray, maxDistance);
         if (planeIntersections == null)
             return null;
 
@@ -113,7 +108,7 @@ public class Polygon extends Geometry {
 
         Vector v1 = _vertices.get(1).subtract(p0);
         Vector v2 = _vertices.get(0).subtract(p0);
-        double sign = v.dotProduct(v1.crossProduct(v2));
+        double sign = v.dotProduct(v1.crossProduct(v2).normalized());
         if (isZero(sign))
             return null;
 
@@ -122,7 +117,7 @@ public class Polygon extends Geometry {
         for (int i = _vertices.size() - 1; i > 0; --i) {
             v1 = v2;
             v2 = _vertices.get(i).subtract(p0);
-            sign = alignZero(v.dotProduct(v1.crossProduct(v2)));
+            sign = alignZero(v.dotProduct(v1.crossProduct(v2).normalized()));
             if (isZero(sign)) return null;
             if (positive != (sign > 0)) return null;
         }

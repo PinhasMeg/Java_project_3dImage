@@ -4,41 +4,32 @@ import primitives.Point3D;
 import primitives.Ray;
 
 import javax.print.DocFlavor;
-import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Geometries implements Intersectable {
-    private List<Intersectable> _geometries = new ArrayList<Intersectable>();
+
+    private final List<Intersectable> _geometries = new LinkedList<>();
 
     public Geometries(Intersectable... _geometries) {
         add(_geometries);
     }
 
     public void add(Intersectable... geometries) {
-        for (Intersectable geo : geometries) {
-            _geometries.add(geo);
-        }
-    }
-
-    public void addAll(Intersectable... geometries) {
-        for (Intersectable geo : geometries) {
-            _geometries.add(geo);
-        }
+        _geometries.addAll(Arrays.asList(geometries));
     }
 
     /**
-     * find the intersections of the geometries
-     *
-     * @param ray
+     * @param ray the ray that intersect the geometries
      * @return list of Point3D that intersect the osef
      */
     @Override
-    public List<GeoPoint> findIntersections(Ray ray) {
+    public List<GeoPoint> findIntersections(Ray ray, double maxDistance) {
         List<GeoPoint> intersections = null;
 
         for (Intersectable geo : _geometries) {
-            List<GeoPoint> tempIntersections = geo.findIntersections(ray);
+            List<GeoPoint> tempIntersections = geo.findIntersections(ray, maxDistance);
             if (tempIntersections != null) {
                 if (intersections == null)
                     intersections = new LinkedList<>();
@@ -46,11 +37,9 @@ public class Geometries implements Intersectable {
             }
         }
         return intersections;
+
     }
 
-    /**
-     * @param intersectables
-     */
     public void remove(Intersectable... intersectables) {
         for (Intersectable geo : _geometries) {
             _geometries.remove(geo);

@@ -1,0 +1,27 @@
+package geometries;
+
+import primitives.*;
+
+/**
+ * Flat Geometry is a Marker abstract class extending Geometry
+ * to differentiate it from RadialGeometry
+ * we did not declare it as an interface
+ */
+public abstract class FlatGeometry extends Geometry {
+    /**
+     * Associated plane in which the flat geometry lays
+     */
+    protected Plane _plane;
+
+    public FlatGeometry(Color _emission, Material _material) {
+        super(_emission, _material);
+    }
+
+    public FlatGeometry(Color _emission) {
+        super(_emission);
+    }
+
+    public FlatGeometry() {
+        super();
+    }
+}

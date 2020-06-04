@@ -7,102 +7,41 @@ import java.util.List;
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
-public class Plane extends Geometry {
-    Point3D _p;
+public class Plane extends FlatGeometry {
+
+    Point3D _p; //Q
     Vector _normal;
 
-    /**
-     * @param emissionLight
-     * @param material
-     * @param p1
-     * @param p2
-     * @param p3
-     */
     public Plane(Color emissionLight, Material material, Point3D p1, Point3D p2, Point3D p3) {
         super(emissionLight, material);
-        initNormal(p1, p2, p3);
-    }
+        //from FlatGeometry
+        this._plane = null;
 
-    /**
-     * constructor
-     *
-     * @param emissionLight
-     * @param material
-     * @param _p
-     * @param _normal
-     */
-    public Plane(Color emissionLight, Material material, Point3D _p, Vector _normal) {
-        super(emissionLight, material);
-        this._p = new Point3D(_p);
-        this._normal = new Vector(_normal);
-    }
-
-    /**
-     * constructor
-     *
-     * @param emissionLight
-     * @param p1
-     * @param p2
-     * @param p3
-     */
-    public Plane(Color emissionLight, Point3D p1, Point3D p2, Point3D p3) {
-        super(emissionLight);
-        initNormal(p1, p2, p3);
-    }
-
-    /**
-     * constructor
-     *
-     * @param p1
-     * @param p2
-     * @param p3
-     */
-    public Plane(Point3D p1, Point3D p2, Point3D p3) {
-        super();
-        initNormal(p1, p2, p3);
-    }
-
-    /**
-     * constructor
-     *
-     * @param emissionLight
-     * @param _p
-     * @param _normal
-     */
-    public Plane(Color emissionLight, Point3D _p, Vector _normal) {
-        super(emissionLight);
-        this._p = new Point3D(_p);
-        this._normal = new Vector(_normal);
-    }
-
-    /**
-     * constructor
-     *
-     * @param _p
-     * @param _normal
-     */
-    public Plane(Point3D _p, Vector _normal) {
-        super();
-        this._p = new Point3D(_p);
-        this._normal = new Vector(_normal);
-    }
-
-    /**
-     * initiate the normal from 3 points
-     *
-     * @param p1
-     * @param p2
-     * @param p3
-     */
-    private void initNormal(Point3D p1, Point3D p2, Point3D p3) {
         _p = new Point3D(p1);
 
         Vector U = new Vector(p1, p2);
         Vector V = new Vector(p1, p3);
+
         Vector N = U.crossProduct(V);
         N.normalize();
 
         _normal = N;
+    }
+
+    public Plane(Color emissionLight, Point3D p1, Point3D p2, Point3D p3) {
+        this(emissionLight, new Material(0, 0, 0), p1, p2, p3);
+    }
+
+    public Plane(Point3D p1, Point3D p2, Point3D p3) {
+        this(Color.BLACK, p1, p2, p3);
+    }
+
+    public Plane(Point3D _p, Vector _normal) {
+        super(Color.BLACK, new Material(0, 0, 0));
+
+        this._p = new Point3D(_p);
+        this._normal = new Vector(_normal);
+        this._plane = null;
     }
 
     @Override
@@ -110,17 +49,13 @@ public class Plane extends Geometry {
         return _normal;
     }
 
-    public Vector getNormal() {
-        return getNormal(null);
-    }
+//    //because polygon needs geNormal without parameter
+//    public Vector getNormal() {
+//        return getNormal(null);
+//    }
 
     @Override
-    public String toString() {
-        return " The Plane's point is: " + _p + ", and the normal is: " + _normal + '.';
-    }
-
-    @Override
-    public List<GeoPoint> findIntersections(Ray ray) {
+    public List<GeoPoint> findIntersections(Ray ray, double maxDistance) {
         Vector p0Q;
         try {
             p0Q = _p.subtract(ray.get_origin());
@@ -129,11 +64,16 @@ public class Plane extends Geometry {
         }
 
         double nv = _normal.dotProduct(ray.get_vector());
-        if (isZero(nv)) // ray is parallel to the plane - no intersections
+        if (isZero(nv)) { // ray is parallel to the plane - no intersections
             return null;
-
+        }
         double t = alignZero(_normal.dotProduct(p0Q) / nv);
+        double tdist = alignZero(maxDistance - t);
 
-        return t <= 0 ? null : List.of(new GeoPoint(this, ray.getTargetPoint(t)));
+        if ((t <= 0) || (tdist <= 0)) {
+            return null;
+        } else {
+            return List.of(new GeoPoint(this, ray.getTargetPoint(t)));
+        }
     }
 }

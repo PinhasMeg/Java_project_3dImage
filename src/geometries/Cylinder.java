@@ -2,74 +2,71 @@ package geometries;
 
 import primitives.*;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
+/**
+ * Cylinder is afinite Tube with a certain _height
+ */
 public class Cylinder extends Tube {
-    public double _height;
-
-    public Cylinder(Color emissionLight, Material material, double radius, Ray ray, double _height) {
-        super(emissionLight, material, radius, ray);
-        this._height = _height;
-    }
-
-    public Cylinder(Color emissionLight, double radius, Ray ray, double _height) {
-        super(emissionLight, radius, ray);
-        this._height = _height;
-    }
+    /**
+     *
+     */
+    private final double _height;
 
     /**
      * Cylinder constructor
      *
-     * @param _radius
-     * @param _ray
-     * @param _height
+     * @param _radius רradius of the Cylinder
+     * @param _ray    direction and reference point  of the cylinder
+     * @param _height height of the cylinder (from the referenced point)
      */
     public Cylinder(double _radius, Ray _ray, double _height) {
         super(_radius, _ray);
         this._height = _height;
     }
 
-    /**
-     * get height
-     *
-     * @return double
-     */
     public double get_height() {
         return _height;
     }
 
-    @Override
-    public String toString() {
-        return "Cylinder 's height is: " + _height + ", axisRay is: " + _axisRay + ", radius is" + _radius + '.';
-    }
-
     /**
-     * Calculating the normal vector of the Cylinder in specific point
-     *
-     * @param point is Point object
-     * @return new vector that is normal to that cylinder
+     * @param point point to calculate the normal
+     * @return normal
+     * @author Dan Zilberstein
      */
+    @Override
     public Vector getNormal(Point3D point) {
-        //The vector from the point of the cylinder to the given point
-        Point3D p = _axisRay.get_origin();
-        Vector v = _axisRay.get_vector();
+        Point3D o = _ray.get_origin();
+        Vector v = _ray.get_vector();
 
-        Vector vector1 = point.subtract(p);
-
-        // We need the projection to multiply the _direction unit vector
-        double projection = vector1.dotProduct(v);
+        // projection of P-O on the ray:
+        double t;
         try {
-            double projectionVectorLength = (v.scale(projection)).length();
-
-            // the point is on the sides of the tube
-            if (_height > projectionVectorLength && projection != 0) {
-                return (point.subtract(p.add(v.scale(projection))).normalized());
-            }
-        } catch (IllegalArgumentException e) {
+            t = alignZero(point.subtract(o).dotProduct(v));
+        } catch (IllegalArgumentException e) { // P = O
+            return v;
         }
 
-        // the point is on a base
-        return get_axisRay().get_vector();
+        // if the point is at a base
+        if (t == 0 || isZero(_height - t)) // if it's close to 0, we'll get ZERO vector exception
+            return v;
+
+        o = o.add(v.scale(t));
+        return point.subtract(o).normalize();
+    }
+
+    @Override
+    public List<GeoPoint> findIntersections(Ray ray) {
+        List<GeoPoint> intersections = super.findIntersections(ray);
+        if (intersections != null) {
+            for (GeoPoint geoPoint : intersections) {
+                geoPoint._geometry = this;
+            }
+        }
+        return intersections;
     }
 }
