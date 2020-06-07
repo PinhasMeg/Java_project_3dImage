@@ -1,80 +1,86 @@
 //Pinhas Meguideche - 1362626 - pinoubg@live.fr
 //Yoel Zeitoun - 1308634 - yoelzeit@gmail.com
 
-
-import geometries.Sphere;
+import elements.*;
+import geometries.*;
 import primitives.*;
+import renderer.*;
+import scene.*;
 
 import static java.lang.System.out;
 import static primitives.Util.*;
 
-/**
- * Test program for the 1st stage
- *
- * @author Dan Zilberstein
- */
 public final class Main {
 
     /**
-     * Main program to tests initial functionality of the 1st stage
+     * Mini Project 1
      *
-     * @param args irrelevant here
+     * @param args
      */
     public static void main(String[] args) {
 
-        try { // test zero vector
-            new Vector(0, 0, 0);
-            out.println("ERROR: zero vector does not throw an exception");
-        } catch (Exception e) {
-        }
+        Scene scene;
+        scene = new Scene.SceneBuilder("Mini Project1")
+                .addAmbientLight(new AmbientLight(Color.BLACK, 0))
+                .addCamera(
+                        new Camera(
+                                new Point3D(0, 0, -1000),
+                                new Vector(0, 0, 1),
+                                new Vector(0, -1, 0)))
+                .addDistance(500)
+                .addBackground(Color.BLACK)
+                .build();
 
-        Vector v1 = new Vector(1, 2, 3);
-        Vector v2 = new Vector(-2, -4, -6);
-        Vector v3 = new Vector(0, 3, -2);
+        scene.addGeometries(
+                new Sphere(
+                        new Color(java.awt.Color.BLUE),
+                        new Material(0.5, 0.5, 30), 20,
+                        new Point3D(0, 0, 0)),
 
-        // test length..
-        if (!isZero(v1.lengthSquared() - 14))
-            out.println("ERROR: lengthSquared() wrong value");
-        if (!isZero(new Vector(0, 3, 4).length() - 5))
-            out.println("ERROR: length() wrong value");
+                new Sphere(new Color(java.awt.Color.GREEN),
+                        new Material(0.5, 0.5, 30), 50,
+                        new Point3D(20, 0, 0)),
 
-        // test Dot-Product
-        if (!isZero(v1.dotProduct(v3)))
-            out.println("ERROR: dotProduct() for orthogonal vectors is not zero");
-        if (!isZero(v1.dotProduct(v2) + 28))
-            out.println("ERROR: dotProduct() wrong value");
+                new Sphere(new Color(java.awt.Color.YELLOW),
+                        new Material(0.5, 0.5, 30), 60,
+                        new Point3D(-150, 0, 0)),
 
-        // test Cross-Product
-        try { // test zero vector
-            v1.crossProduct(v2);
-            out.println("ERROR: crossProduct() for parallel vectors does not throw an exception");
-        } catch (Exception e) {
-        }
-        Vector vr = v1.crossProduct(v3);
-        if (!isZero(vr.length() - v1.length() * v3.length()))
-            out.println("ERROR: crossProduct() wrong result length");
-        if (!isZero(vr.dotProduct(v1)) || !isZero(vr.dotProduct(v3)))
-            out.println("ERROR: crossProduct() result is not orthogonal to its operands");
+                new Sphere(new Color(java.awt.Color.magenta),
+                        new Material(0.5, 0.5, 30), 50,
+                        new Point3D(170, 0, -150)),
 
-        // test vector normalization vs vector length and cross-product
-        Vector v = new Vector(1, 2, 3);
-        Vector vCopy = new Vector(v);
-        Vector vCopyNormalize = vCopy.normalize();
-        if (vCopy != vCopyNormalize)
-            out.println("ERROR: normalize() function creates a new vector");
-        if (!isZero(vCopyNormalize.length() - 1))
-            out.println("ERROR: normalize() result is not a unit vector");
-        Vector u = v.normalized();
-        if (u == v)
-            out.println("ERROR: normalizated() function does not create a new vector");
+                new Sphere(new Color(java.awt.Color.RED),
+                        new Material(0.5, 0.5, 30), 40,
+                        new Point3D(75, 0, -250)));
 
-        // Test operations with points and vectors
-        Point3D p1 = new Point3D(1, 2, 3);
-        if (!Point3D.ZERO.equals(p1.add(new Vector(-1, -2, -3))))
-            out.println("ERROR: Point + Vector does not work correctly");
-        if (!new Vector(1, 1, 1).equals(new Point3D(2, 3, 4).subtract(p1)))
-            out.println("ERROR: Point - Point does not work correctly");
+//                new Plane(new Color(java.awt.Color.RED),
+//                        new Material(0.8, 0.2, 300),
+//                        new Point3D(-150, 150, 150),
+//                        new Point3D(-70, -70, 50),
+//                        new Point3D(75, -75, 150))
+//                        );
 
-        out.println("If there were no any other outputs - all tests succeeded!");
+
+//        scene.addLights(new DirectionalLight(new Color(300, 150, 150), new Vector(0, 0, 1)));
+//        scene.addLights(new PointLight(new Color(50, 150, 55),
+//                new Point3D(100, -100, 200),1, 1E-5, 1.5E-7));
+        scene.addLights(
+                new SpotLight(
+                        new Color(400, 240, 0),
+                        new Point3D(-400, -100, -400),
+                        new Vector(1, 1, 1),
+                        1, 1E-5, 1.5E-7));
+        scene.addLights(
+                new SpotLight(
+                        new Color(400, 240, 0),
+                        new Point3D(400, -100, -400),
+                        new Vector(-1, 1, 1),
+                        1, 1E-5, 1.5E-7));
+
+        ImageWriter imageWriter = new ImageWriter("MiniProject1", 400, 200, 800, 400);
+        Render render = new Render(imageWriter, scene);
+
+        render.renderImage();
+        render.writeToImage();
     }
 }

@@ -29,7 +29,6 @@ class PlaneTest {
         Vector v2 = p2.getNormal(new Point3D(0.0, 1.0, 0.0));
 
         Plane p3 = new Plane(
-
                 new Point3D(1.0, 0.0, 0.0),
                 new Point3D(0.0, 0.0, 1.0),
                 new Point3D(0.0, 1.0, 0.0));
