@@ -13,14 +13,24 @@ public abstract class FlatGeometry extends Geometry {
      */
     protected Plane _plane;
 
+    /**
+     * @param _emission
+     * @param _material
+     */
     public FlatGeometry(Color _emission, Material _material) {
         super(_emission, _material);
     }
 
+    /**
+     * @param _emission
+     */
     public FlatGeometry(Color _emission) {
         super(_emission);
     }
 
+    /**
+     *
+     */
     public FlatGeometry() {
         super();
     }

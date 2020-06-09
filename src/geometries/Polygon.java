@@ -92,11 +92,20 @@ public class Polygon extends FlatGeometry {
 //        this(new Color(java.awt.Color.RED),new Material(0,0,0),vertices);
     }
 
+    /**
+     * @param point
+     * @return
+     */
     @Override
     public Vector getNormal(Point3D point) {
         return _plane.getNormal(null);
     }
 
+    /**
+     * @param ray
+     * @param maxDistance
+     * @return
+     */
     @Override
     public List<GeoPoint> findIntersections(Ray ray, double maxDistance) {
         List<GeoPoint> planeIntersections = _plane.findIntersections(ray, maxDistance);

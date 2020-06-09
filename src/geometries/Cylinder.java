@@ -9,7 +9,7 @@ import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
- * Cylinder is afinite Tube with a certain _height
+ * Cylinder is a finite Tube with a certain _height
  */
 public class Cylinder extends Tube {
     /**
@@ -29,6 +29,9 @@ public class Cylinder extends Tube {
         this._height = _height;
     }
 
+    /**
+     * @return
+     */
     public double get_height() {
         return _height;
     }
@@ -59,6 +62,10 @@ public class Cylinder extends Tube {
         return point.subtract(o).normalize();
     }
 
+    /**
+     * @param ray ray pointing toward a Geometry
+     * @return
+     */
     @Override
     public List<GeoPoint> findIntersections(Ray ray) {
         List<GeoPoint> intersections = super.findIntersections(ray);

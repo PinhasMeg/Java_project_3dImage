@@ -12,6 +12,13 @@ public class Plane extends FlatGeometry {
     Point3D _p; //Q
     Vector _normal;
 
+    /**
+     * @param emissionLight
+     * @param material
+     * @param p1
+     * @param p2
+     * @param p3
+     */
     public Plane(Color emissionLight, Material material, Point3D p1, Point3D p2, Point3D p3) {
         super(emissionLight, material);
         //from FlatGeometry
@@ -28,14 +35,29 @@ public class Plane extends FlatGeometry {
         _normal = N;
     }
 
+    /**
+     * @param emissionLight
+     * @param p1
+     * @param p2
+     * @param p3
+     */
     public Plane(Color emissionLight, Point3D p1, Point3D p2, Point3D p3) {
         this(emissionLight, new Material(0, 0, 0), p1, p2, p3);
     }
 
+    /**
+     * @param p1
+     * @param p2
+     * @param p3
+     */
     public Plane(Point3D p1, Point3D p2, Point3D p3) {
         this(Color.BLACK, p1, p2, p3);
     }
 
+    /**
+     * @param _p
+     * @param _normal
+     */
     public Plane(Point3D _p, Vector _normal) {
         super(Color.BLACK, new Material(0, 0, 0));
 
@@ -44,16 +66,33 @@ public class Plane extends FlatGeometry {
         this._plane = null;
     }
 
+    /**
+     * @param emissionLight
+     * @param _p
+     * @param _normal
+     */
+    public Plane(Color emissionLight, Point3D _p, Vector _normal) {
+        super(emissionLight, new Material(0, 0, 0));
+
+        this._p = new Point3D(_p);
+        this._normal = new Vector(_normal);
+        this._plane = null;
+    }
+
+    /**
+     * @param p
+     * @return
+     */
     @Override
     public Vector getNormal(Point3D p) {
         return _normal;
     }
 
-//    //because polygon needs geNormal without parameter
-//    public Vector getNormal() {
-//        return getNormal(null);
-//    }
-
+    /**
+     * @param ray
+     * @param maxDistance
+     * @return
+     */
     @Override
     public List<GeoPoint> findIntersections(Ray ray, double maxDistance) {
         Vector p0Q;

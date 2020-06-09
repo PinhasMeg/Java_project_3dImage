@@ -8,21 +8,34 @@ import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ *
+ */
 public class Geometries implements Intersectable {
-
+    /**
+     *
+     */
     private final List<Intersectable> _geometries = new LinkedList<>();
 
+    /**
+     *
+     * @param _geometries
+     */
     public Geometries(Intersectable... _geometries) {
         add(_geometries);
     }
 
+    /**
+     *
+     * @param geometries
+     */
     public void add(Intersectable... geometries) {
         _geometries.addAll(Arrays.asList(geometries));
     }
 
     /**
      * @param ray the ray that intersect the geometries
-     * @return list of Point3D that intersect the osef
+     * @return list of Point3D that intersect the list
      */
     @Override
     public List<GeoPoint> findIntersections(Ray ray, double maxDistance) {
@@ -40,6 +53,9 @@ public class Geometries implements Intersectable {
 
     }
 
+    /**
+     * @param intersectables
+     */
     public void remove(Intersectable... intersectables) {
         for (Intersectable geo : _geometries) {
             _geometries.remove(geo);

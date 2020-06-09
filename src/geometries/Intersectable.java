@@ -19,6 +19,11 @@ public interface Intersectable {
         return findIntersections(ray, Double.POSITIVE_INFINITY);
     }
 
+    /**
+     * @param ray
+     * @param maxDistance
+     * @return
+     */
     List<GeoPoint> findIntersections(Ray ray, double maxDistance);
 
     /**
@@ -35,6 +40,9 @@ public interface Intersectable {
             this._point = pt;
         }
 
+        /**
+         * @return
+         */
         public Point3D getPoint() {
             return _point;
         }
@@ -49,6 +57,9 @@ public interface Intersectable {
             return ((_geometry.equals(geoPoint._geometry)) && (_point.equals(geoPoint._point)));
         }
 
+        /**
+         * @return
+         */
         public Geometry getGeometry() {
             return _geometry;
         }
