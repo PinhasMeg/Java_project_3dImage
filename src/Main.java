@@ -24,7 +24,7 @@ public final class Main {
                 .addAmbientLight(new AmbientLight(Color.BLACK, 0))
                 .addCamera(
                         new Camera(
-                                new Point3D(0, -400, 0),
+                                new Point3D(0, -200, 0),
                                 new Vector(0, 0, 1),
                                 new Vector(0, -1, 0)))
                 .addDistance(100)
@@ -37,14 +37,14 @@ public final class Main {
                 scene.addGeometries(
                         new Triangle(
                                 new Color(32, 32, 32),
-                                new Material(0.5, 0.1, 60),
+                                new Material(0.5, 0.5, 60),
                                 new Point3D(i, 0, j),
                                 new Point3D(i + 500, 0, j),
                                 new Point3D(i, 0, j + 500)),
 
                         new Triangle(
                                 new Color(70, 70, 70),
-                                new Material(0.5, 0.1, 60),
+                                new Material(0.5, 0.5, 60),
                                 new Point3D(i, 0, j + 500),
                                 new Point3D(i + 500, 0, j + 500),
                                 new Point3D(i + 500, 0, j))
@@ -66,28 +66,28 @@ public final class Main {
                 new Plane(
                         new Color(40, 0, 50),
                         new Point3D(2000, 0, 0),
-                        new Vector(1, 0, 0)
-                ),
+                        new Vector(1, 0, 0)),
+
                 new Sphere(
                         new Color(java.awt.Color.BLUE),
-                        new Material(0.5, 0.9, 80), 150,
-                        new Point3D(0, -150, 750)),
+                        new Material(0.5, 0.9, 80), 100,
+                        new Point3D(-160, -100, 500)),
 
                 new Sphere(new Color(java.awt.Color.GREEN),
-                        new Material(0.5, 0.9, 50), 300,
-                        new Point3D(-750, -300, 750)),
+                        new Material(0.5, 0.9, 50), 125,
+                        new Point3D(-500, -100, 400)),
 
                 new Sphere(new Color(java.awt.Color.YELLOW),
                         new Material(0.5, 0.9, 60), 100,
-                        new Point3D(1000, -100, 1000)),
+                        new Point3D(1000, -100, 500)),
 
                 new Sphere(new Color(java.awt.Color.magenta),
-                        new Material(0.5, 0.9, 70), 250,
-                        new Point3D(0, -250, 1500)),
+                        new Material(0.5, 0.9, 70), 200,
+                        new Point3D(0, -200, 1500)),
 
                 new Sphere(new Color(java.awt.Color.RED),
                         new Material(0.5, 0.9, 90), 150,
-                        new Point3D(1000, -150, 750))
+                        new Point3D(500, -150, 500))
 
         );
 
@@ -98,15 +98,15 @@ public final class Main {
         scene.addLights(
                 new SpotLight(
                         new Color(255, 0, 100),
-                        new Point3D(-400, -1000, -400),
+                        new Point3D(-1000, -500, 200),
                         new Vector(1, 1, 1),
                         1, 1E-5, 1.5E-7));
-        scene.addLights(
-                new SpotLight(
-                        new Color(255, 0, 100),
-                        new Point3D(0, -1000, 0),
-                        new Vector(0, 1, 0),
-                        1, 1E-5, 1.5E-7));
+//        scene.addLights(
+//                new SpotLight(
+//                        new Color(255, 0, 100),
+//                        new Point3D(0, -1000, 0),
+//                        new Vector(0, 1, 0),
+//                        1, 1E-5, 1.5E-7));
         scene.addLights(
                 new SpotLight(
                         new Color(255, 100, 0),
