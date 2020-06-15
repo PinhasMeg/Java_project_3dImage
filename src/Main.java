@@ -37,14 +37,14 @@ public final class Main {
                 scene.addGeometries(
                         new Triangle(
                                 new Color(32, 32, 32),
-                                new Material(0.5, 0.5, 60),
+                                new Material(0.5, 0.5, 60, 0, 0.5),
                                 new Point3D(i, 0, j),
                                 new Point3D(i + 500, 0, j),
                                 new Point3D(i, 0, j + 500)),
 
                         new Triangle(
                                 new Color(70, 70, 70),
-                                new Material(0.5, 0.5, 60),
+                                new Material(0.5, 0.5, 60, 0, 0.25),
                                 new Point3D(i, 0, j + 500),
                                 new Point3D(i + 500, 0, j + 500),
                                 new Point3D(i + 500, 0, j))
@@ -55,38 +55,41 @@ public final class Main {
         scene.addGeometries(
                 new Plane(
                         new Color(40, 0, 50),
+                        new Material(0.5, 0.5, 80, 0.1, 0.3),
                         new Point3D(-2000, 0, -2000),
                         new Vector(1, 0, 0)),
 
                 new Plane(
                         new Color(50, 0, 50),
+                        new Material(0.5, 0.5, 80, 0.1, 0.8),
                         new Point3D(0, 0, 2000),
                         new Vector(0, 0, 1)),
 
                 new Plane(
                         new Color(40, 0, 50),
+                        new Material(0.5, 0.5, 80, 0.1, 0.3),
                         new Point3D(2000, 0, 0),
                         new Vector(1, 0, 0)),
 
                 new Sphere(
                         new Color(java.awt.Color.BLUE),
-                        new Material(0.5, 0.9, 80), 100,
+                        new Material(0.5, 0.5, 80, 0.1, 0.7), 100,
                         new Point3D(-160, -100, 500)),
 
                 new Sphere(new Color(java.awt.Color.GREEN),
-                        new Material(0.5, 0.9, 50), 125,
+                        new Material(0.5, 0.5, 50, 0.1, 0.2), 125,
                         new Point3D(-500, -100, 400)),
 
                 new Sphere(new Color(java.awt.Color.YELLOW),
-                        new Material(0.5, 0.9, 60), 100,
+                        new Material(0.5, 0.5, 60, 0.1, 0.9), 100,
                         new Point3D(1000, -100, 500)),
 
                 new Sphere(new Color(java.awt.Color.magenta),
-                        new Material(0.5, 0.9, 70), 200,
+                        new Material(0.5, 0.5, 70, 0.1, 0.3), 200,
                         new Point3D(0, -200, 1500)),
 
                 new Sphere(new Color(java.awt.Color.RED),
-                        new Material(0.5, 0.9, 90), 150,
+                        new Material(0.5, 0.5, 90, 0.7, 0), 150,
                         new Point3D(500, -150, 500))
 
         );
@@ -115,7 +118,11 @@ public final class Main {
                         1, 1E-5, 1.5E-7));
 
         ImageWriter imageWriter = new ImageWriter("MiniProject1", 400, 200, 800, 400);
-        Render render = new Render(imageWriter, scene);
+        Render render = new Render(imageWriter, scene)
+                //.setSupersamplingDensity(0.5)
+                //.setRayCounter(25)
+                .setMultithreading(4)
+                .setDebugPrint();
 
         render.renderImage();
         render.writeToImage();

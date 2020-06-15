@@ -1,13 +1,15 @@
 package elements;
 
-import primitives.Point3D;
-import primitives.Ray;
-import primitives.Util;
-import primitives.Vector;
+import primitives.*;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 import static primitives.Util.isZero;
 
 public class Camera {
+    private static final Random rnd = new Random();
     Point3D _p0;
     Vector _vTo;
     Vector _vUp;
@@ -32,15 +34,15 @@ public class Camera {
         return new Point3D(_p0);
     }
 
-    public Vector get_vTo() {
+    public Vector getVTo() {
         return new Vector(_vTo);
     }
 
-    public Vector get_vUp() {
+    public Vector getVUp() {
         return new Vector(_vUp);
     }
 
-    public Vector get_vRight() {
+    public Vector getVRight() {
         return new Vector(_vRight);
     }
 
@@ -73,4 +75,111 @@ public class Camera {
         return new Ray(_p0, Vij);
 
     }
+
+    /**
+     * creating beam of rays for supersampling
+     *
+     * @param density factor for the radius
+     * @param amount  number of random rays
+     * @return
+     */
+    public List<Ray> constructRayBeamThroughPixel(int nX, int nY, int j, int i,
+                                                  double screenDistance, double screenWidth, double screenHeight,
+                                                  double density, int amount) {
+        if (isZero(screenDistance)) {
+            throw new IllegalArgumentException("distance cannot be 0");
+        }
+
+        List<Ray> rays = constructNineRaysThroughPixel(nX, nY, i, j, screenDistance, screenWidth, screenHeight);
+
+        double Ry = screenHeight / nY;
+        double Rx = screenWidth / nX;
+
+        Point3D Pij = rays.get(rays.size() - 1).get_origin();
+
+        //antialiasing density >= 1
+        double radius = (Rx + Ry) / 2d * density;
+
+
+        for (int counter = 0; counter < amount; counter++) {
+            Point3D point = new Point3D(Pij);
+            double cosTheta = 2 * rnd.nextDouble() - 1;
+            double sinTheta = Math.sqrt(1d - cosTheta * cosTheta);
+
+            double d = radius * (2 * rnd.nextDouble() - 1);
+            double x = d * cosTheta;
+            double y = d * sinTheta;
+
+            if (!isZero(x)) {
+                point = point.add(_vRight.scale(x));
+            }
+            if (!isZero(y)) {
+                point = point.add(_vUp.scale(y));
+            }
+            rays.add(new Ray(_p0, point.subtract(_p0)));
+        }
+        return rays;
+    }
+
+
+    public List<Ray> constructNineRaysThroughPixel(int nX, int nY, double i, double j, double screenDist,
+                                                   double screenWidth, double screenHeight) {
+
+        double Rx = screenWidth / nX;//the length of pixel in X axis
+        double Ry = screenHeight / nY;//the length of pixel in Y axis
+
+        double yi = ((i - nY / 2d) * Ry + Ry / 2d);
+        double xj = ((j - nX / 2d) * Rx + Rx / 2d);
+
+
+        Point3D Pc = new Point3D(_p0.add(_vTo.scale(screenDist)));//new point from the camera to the screen
+
+        //pc is the center of the view plane
+        Point3D P = Pc.add(_vRight.scale(xj).subtract(_vUp.scale(yi)));
+
+        //finding the intersection point with the view plane according the formula in the moodle
+
+        //-----SuperSampling-----
+        List<Ray> rays = new LinkedList<>();//the return list, construct Rays Through Pixels
+
+        rays.add(new Ray(P, _p0.subtract(P)));//the first ray(we already find it)
+        //the next 8 rays we gonna add is the same thing, but there's difference in the variation on
+        // x and y arguments, some times we will change one of them and some times both of them
+
+        // x coord middle of pixel/2 downwards
+        Point3D tmp = new Point3D(P.get_x().get() - Rx / 2, P.get_y().get(), P.get_z().get());
+        rays.add(new Ray(tmp, new Vector(_p0.subtract(tmp)).normalized()));
+
+        // y coord middle of pixel/2 downward
+        tmp = new Point3D(P.get_x().get(), P.get_y().get() - Ry / 2, P.get_z().get());
+        rays.add(new Ray(tmp, new Vector(_p0.subtract(tmp)).normalized()));
+
+        // x coord middle of pixel/2 upwards
+        tmp = new Point3D(P.get_x().get() + Rx / 2, P.get_y().get(), P.get_z().get());
+        rays.add(new Ray(tmp, new Vector(_p0.subtract(tmp)).normalized()));
+
+        // y coord middle of pixel/2 upward
+        tmp = new Point3D(P.get_x().get(), P.get_y().get() + Ry / 2, P.get_z().get());
+        rays.add(new Ray(tmp, new Vector(_p0.subtract(tmp)).normalized()));
+
+        // x coord middle of pixel/2 downwards  y coord middle of pixel/2 downward
+        tmp = new Point3D(P.get_x().get() - Rx / 2, P.get_y().get() - Ry / 2, P.get_z().get());
+        rays.add(new Ray(tmp, new Vector(_p0.subtract(tmp)).normalized()));
+
+        // x coord middle of pixel/2 upwards  y coord middle of pixel/2 downward
+        tmp = new Point3D(P.get_x().get() + Rx / 2, P.get_y().get() - Ry / 2, P.get_z().get());
+        rays.add(new Ray(tmp, new Vector(_p0.subtract(tmp)).normalized()));
+
+        // x coord middle of pixel/2 downwards    y coord middle of pixel/2 upward
+        tmp = new Point3D(P.get_x().get() - Ry / 2, P.get_y().get() + Ry / 2, P.get_z().get());
+        rays.add(new Ray(tmp, new Vector(_p0.subtract(tmp)).normalized()));
+
+        // x coord middle of pixel/2 upwards   y coord middle of pixel/2 upward
+        tmp = new Point3D(P.get_x().get() + Ry / 2, P.get_y().get() + Ry / 2, P.get_z().get());
+        rays.add(new Ray(tmp, new Vector(_p0.subtract(tmp)).normalized()));
+
+        return rays;
+
+    }
+
 }

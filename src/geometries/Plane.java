@@ -68,6 +68,20 @@ public class Plane extends FlatGeometry {
 
     /**
      * @param emissionLight
+     * @param material
+     * @param _p
+     * @param _normal
+     */
+    public Plane(Color emissionLight, Material material, Point3D _p, Vector _normal) {
+        super(emissionLight, material);
+
+        this._p = new Point3D(_p);
+        this._normal = new Vector(_normal);
+        this._plane = null;
+    }
+
+    /**
+     * @param emissionLight
      * @param _p
      * @param _normal
      */
