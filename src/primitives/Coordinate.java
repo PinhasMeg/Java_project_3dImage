@@ -41,7 +41,6 @@ public final class Coordinate {
         return _coord;
     }
 
-    /*************** Admin *****************/
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

@@ -7,12 +7,22 @@ import java.util.List;
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
+/**
+ * The plane class
+ */
 public class Plane extends FlatGeometry {
-
-    Point3D _p; //Q
+    /**
+     * a point in the plane
+     */
+    Point3D _p;
+    /**
+     * a normal of the plane
+     */
     Vector _normal;
 
     /**
+     * constructor of the plane
+     *
      * @param emissionLight
      * @param material
      * @param p1
@@ -36,6 +46,8 @@ public class Plane extends FlatGeometry {
     }
 
     /**
+     * constructor
+     *
      * @param emissionLight
      * @param p1
      * @param p2
@@ -46,6 +58,8 @@ public class Plane extends FlatGeometry {
     }
 
     /**
+     * constructor
+     *
      * @param p1
      * @param p2
      * @param p3
@@ -55,6 +69,8 @@ public class Plane extends FlatGeometry {
     }
 
     /**
+     * Constructor
+     *
      * @param _p
      * @param _normal
      */
@@ -94,8 +110,10 @@ public class Plane extends FlatGeometry {
     }
 
     /**
+     * get the normal
+     *
      * @param p
-     * @return
+     * @return the normal of the plane
      */
     @Override
     public Vector getNormal(Point3D p) {
@@ -103,9 +121,11 @@ public class Plane extends FlatGeometry {
     }
 
     /**
+     * find the intersections
      * @param ray
      * @param maxDistance
-     * @return
+     * @return a list of GeoPoints of the intersections found
+     * @author Dr Eliezer
      */
     @Override
     public List<GeoPoint> findIntersections(Ray ray, double maxDistance) {

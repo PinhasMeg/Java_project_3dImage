@@ -262,7 +262,6 @@ public class Render {
     /**
      * @param inRays List of surrounding rays
      * @return average color
-     * @author Reuven Smadja
      */
     private Color calcColor(List<Ray> inRays) {
         Color bkg = _scene.getBackground();
@@ -389,13 +388,15 @@ public class Render {
     }
 
     /**
+     * Construct a Refracted Ray
+     *
      * @param pointGeo
      * @param inRay
-     * @param n
+     * @param v
      * @return
      */
-    private Ray constructRefractedRay(Point3D pointGeo, Ray inRay, Vector n) {
-        return new Ray(pointGeo, inRay.get_vector(), n);
+    private Ray constructRefractedRay(Point3D pointGeo, Ray inRay, Vector v) {
+        return new Ray(pointGeo, inRay.get_vector(), v);
     }
 
     /**
@@ -470,7 +471,6 @@ public class Render {
      * @param nl dot-product n*l
      * @param ip light intensity at the point
      * @return diffusive component of light reflection
-     * @author Dan Zilberstein (modified by E.G.)
      * <p>
      * Diffusely reflected light is light which is reflected evenly
      * in all directions away from the surface. This is the predominant mode of

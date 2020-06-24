@@ -1,15 +1,32 @@
 package primitives;
 
+/**
+ * Material is a class that define the material of each object
+ */
 public class Material {
-
+    /**
+     * Diffuse factor
+     */
     private final double _kD;
+    /**
+     * Specular factor
+     */
     private final double _kS;
+    /**
+     * the object’s shininess
+     */
     private final int _nShininess;
+    /**
+     * Reflective factor
+     */
     private final double _kr;
+    /**
+     * Transparency factor
+     */
     private final double _kt;
 
     /**
-     * constructorr
+     * constructor
      *
      * @param kD
      * @param kS

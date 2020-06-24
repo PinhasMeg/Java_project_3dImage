@@ -8,11 +8,18 @@ import static java.lang.StrictMath.sqrt;
 import static primitives.Util.isZero;
 
 /**
- * This class contains a 3Dpoint and a vector
+ * This class contains a 3dPoint and a vector
  */
 public class Ray {
 
+    /**
+     * move the ray head point by DELTA in direction of the secondary ray but
+     * over the normal’s line
+     */
     private static final double DELTA = 0.1;
+    /**
+     * create new random number
+     */
     private static final Random rnd = new Random();
     /**
      * The origin from which the ray starts.
@@ -37,16 +44,17 @@ public class Ray {
     }
 
     /**
+     * Constructor with parameters.
+     * Move the ray's origin by DELTA or -DELTA in function of the sign of the dot product
+     * between the ray's direction and the normal.
+     *
      * @param point
      * @param direction
      * @param normal
      */
     public Ray(Point3D point, Vector direction, Vector normal) {
-
         _vector = new Vector(direction).normalized();
-
         double nv = normal.dotProduct(direction);
-
         Vector normalDelta = normal.scale((nv > 0 ? DELTA : -DELTA));
         _origin = point.add(normalDelta);
     }
@@ -76,8 +84,9 @@ public class Ray {
     }
 
     /**
+     * Scales the origin's place of the ray by a length (double)
      * @param length
-     * @return
+     * @return Point3D of the Origin
      */
     public Point3D getTargetPoint(double length) {
         return isZero(length) ? _origin : new Point3D(_origin).add(_vector.scale(length));
@@ -105,6 +114,7 @@ public class Ray {
     }
 
     /**
+     * create a beam of rays
      * @param focalPoint
      * @param ratio
      * @param radius

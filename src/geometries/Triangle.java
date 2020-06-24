@@ -9,6 +9,9 @@ import geometries.Intersectable.*;
 
 import static primitives.Util.isZero;
 
+/**
+ * The triangle class
+ */
 public class Triangle extends Polygon {
 
     /**

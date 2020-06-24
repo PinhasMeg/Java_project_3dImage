@@ -12,7 +12,7 @@ public abstract class RadialGeometry extends Geometry {
     double _radius;
 
     /**
-     * constructor for a new extended  RadialGeometry object.
+     * constructor for a new extended RadialGeometry object.
      *
      * @param radius   the radius of the RadialGeometry
      * @param material the material of the RadialGeometry
@@ -24,6 +24,8 @@ public abstract class RadialGeometry extends Geometry {
     }
 
     /**
+     * constructor
+     *
      * @param emissionLight
      * @param radius
      */
@@ -33,6 +35,7 @@ public abstract class RadialGeometry extends Geometry {
     }
 
     /**
+     * constructor
      * @param radius
      */
     public RadialGeometry(double radius) {
@@ -41,6 +44,7 @@ public abstract class RadialGeometry extends Geometry {
     }
 
     /**
+     * constructor
      * @param other
      */
     public RadialGeometry(RadialGeometry other) {

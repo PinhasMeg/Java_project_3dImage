@@ -12,7 +12,9 @@ import java.util.List;
 public interface Intersectable {
 
     /**
-     * @param ray ray pointing toward a Gepmtry
+     * find the intersections
+     *
+     * @param ray pointing toward a Geometry
      * @return List<GeoPoint> return values
      */
     default List<GeoPoint> findIntersections(Ray ray) {
@@ -20,9 +22,10 @@ public interface Intersectable {
     }
 
     /**
-     * @param ray
-     * @param maxDistance
-     * @return
+     * find the intersections
+     * @param ray pointing toward a Geometry
+     * @param maxDistance the max distance between the ray and the geometrie
+     * @return List<GeoPoint> return values
      */
     List<GeoPoint> findIntersections(Ray ray, double maxDistance);
 
@@ -41,10 +44,21 @@ public interface Intersectable {
         }
 
         /**
-         * @return
+         * get the point of the GeoPoint
+         *
+         * @return the point
          */
         public Point3D getPoint() {
             return _point;
+        }
+
+        /**
+         * get the Geometry of the GeoPoint
+         *
+         * @return the Geometry
+         */
+        public Geometry getGeometry() {
+            return _geometry;
         }
 
         @Override
@@ -55,13 +69,6 @@ public interface Intersectable {
             GeoPoint geoPoint = (GeoPoint) o;
 
             return ((_geometry.equals(geoPoint._geometry)) && (_point.equals(geoPoint._point)));
-        }
-
-        /**
-         * @return
-         */
-        public Geometry getGeometry() {
-            return _geometry;
         }
     }
     //end of GeoPoint

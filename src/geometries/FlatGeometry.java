@@ -6,6 +6,8 @@ import primitives.*;
  * Flat Geometry is a Marker abstract class extending Geometry
  * to differentiate it from RadialGeometry
  * we did not declare it as an interface
+ *
+ * @author Dr Eliezer
  */
 public abstract class FlatGeometry extends Geometry {
     /**
@@ -14,6 +16,8 @@ public abstract class FlatGeometry extends Geometry {
     protected Plane _plane;
 
     /**
+     * constructor
+     *
      * @param _emission
      * @param _material
      */
@@ -22,6 +26,7 @@ public abstract class FlatGeometry extends Geometry {
     }
 
     /**
+     * constructor
      * @param _emission
      */
     public FlatGeometry(Color _emission) {
@@ -29,7 +34,7 @@ public abstract class FlatGeometry extends Geometry {
     }
 
     /**
-     *
+     * default constructor
      */
     public FlatGeometry() {
         super();

@@ -9,11 +9,11 @@ import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
- * Cylinder is a finite Tube with a certain _height
+ * Cylinder is a finite Tube with a certain height
  */
 public class Cylinder extends Tube {
     /**
-     *
+     * the height of the cylinder
      */
     private final double _height;
 
@@ -30,7 +30,9 @@ public class Cylinder extends Tube {
     }
 
     /**
-     * @return
+     * get the height of the Cylinder
+     *
+     * @return a double of the height
      */
     public double get_height() {
         return _height;
@@ -63,8 +65,9 @@ public class Cylinder extends Tube {
     }
 
     /**
+     * find the intersections
      * @param ray ray pointing toward a Geometry
-     * @return
+     * @return a list of GeoPoints
      */
     @Override
     public List<GeoPoint> findIntersections(Ray ray) {

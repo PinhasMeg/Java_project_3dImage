@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Objects;
 import static primitives.Util.alignZero;
 
-
+/**
+ * The Sphere class
+ */
 public class Sphere extends RadialGeometry {
     /**
      * The center of the sphere
@@ -20,16 +22,28 @@ public class Sphere extends RadialGeometry {
      * @param center the center point of the sphere
      * @throws Exception in case of negative or zero radius from RadialGeometry constructor
      */
-
     public Sphere(Color emissionLight, Material material, double radius, Point3D center) {
         super(emissionLight, radius, material);
         this._center = new Point3D(center);
     }
 
+    /**
+     * constructor of the sphere
+     *
+     * @param emissionLight
+     * @param radius
+     * @param center
+     */
     public Sphere(Color emissionLight, double radius, Point3D center) {
         this(emissionLight, new Material(0, 0, 0), radius, center);
     }
 
+    /**
+     * constructor
+     *
+     * @param radius
+     * @param center
+     */
     public Sphere(double radius, Point3D center) {
         this(Color.BLACK, new Material(0, 0, 0), radius, center);
     }
@@ -59,6 +73,14 @@ public class Sphere extends RadialGeometry {
         return normal.normalize();
     }
 
+    /**
+     * find intersections
+     *
+     * @param ray
+     * @param maxDistance
+     * @return a list of the intersections
+     * @author Dr Eliezer
+     */
     @Override
     public List<GeoPoint> findIntersections(Ray ray, double maxDistance) {
         Point3D p0 = ray.get_origin();

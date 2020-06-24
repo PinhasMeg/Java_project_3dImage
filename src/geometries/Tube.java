@@ -28,26 +28,41 @@ public class Tube extends RadialGeometry {
      * @throws Exception in case of negative or zero radius from RadialGeometry constructor
      */
     public Tube(Color emissionLight, Material _material, double _radius, Ray _ray) {
-        super(Color.BLACK, _radius);
+        super(emissionLight, _radius);
         this._material = _material;
         this._ray = new Ray(_ray);
-
     }
 
+    /**
+     * constructor of the Tube
+     *
+     * @param _radius
+     * @param _ray
+     */
     public Tube(double _radius, Ray _ray) {
         this(Color.BLACK, new Material(0, 0, 0), _radius, _ray);
     }
 
+    /**
+     * Constructor of the Tube
+     *
+     * @param emissionLight
+     * @param _radius
+     * @param _ray
+     */
     public Tube(Color emissionLight, double _radius, Ray _ray) {
         this(emissionLight, new Material(0, 0, 0), _radius, _ray);
     }
 
+    /**
+     * Get the ray
+     *
+     * @return the ray
+     */
     public Ray getRay() {
         return _ray;
     }
 
-
-//  TODO   public boolean equals(Object obj)
 
 //    @Override
 //    public boolean equals(Object obj) {
@@ -99,7 +114,6 @@ public class Tube extends RadialGeometry {
 
     @Override
     public List<GeoPoint> findIntersections(Ray anotherray, double maxDistance) {
-
         Point3D P = anotherray.get_origin();
         Point3D _point = this._ray.get_origin();
 

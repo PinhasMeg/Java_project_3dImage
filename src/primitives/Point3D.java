@@ -103,6 +103,8 @@ public class Point3D {
     }
 
     /**
+     * Create a Vector from a subtract between two points
+     *
      * @param p is a Point3D
      * @return new vector : thisPoint - paramPoint
      */
@@ -115,6 +117,8 @@ public class Point3D {
     }
 
     /**
+     * Gives a Point from the addition of a Vector and this object
+     *
      * @param vector
      * @return a Point3D
      */
@@ -126,8 +130,10 @@ public class Point3D {
     }
 
     /**
-     * @param p
-     * @return
+     * Calculates the square of the distance of 2 points
+     *
+     * @param p Point3D
+     * @return double
      */
     public double distanceSquared(Point3D p) {
         return (p._x.get() - this._x.get()) * (p._x.get() - this._x.get())
@@ -136,8 +142,9 @@ public class Point3D {
     }
 
     /**
-     * @param p
-     * @return
+     * Calculates the the distance of 2 points from the distanceSquared function
+     * @param p Point3D
+     * @return double
      */
     public double distance(Point3D p) {
         return sqrt(distanceSquared(p));
