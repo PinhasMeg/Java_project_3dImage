@@ -21,24 +21,50 @@ import primitives.Vector;
  * <p>
  * A spot light contributes to diffuse and specular reflections, which depend on the orientation and position
  * of an object's surface. A spot light does not contribute to ambient reflections.
+ *
+ * @author Dr Eliezer
  */
 public class SpotLight extends PointLight {
     Vector _direction;
     double _concentration;
 
+    /**
+     * Constructor
+     *
+     * @param colorIntensity
+     * @param position
+     * @param direction
+     * @param kC
+     * @param kL
+     * @param kQ
+     * @param concentration
+     */
     public SpotLight(Color colorIntensity, Point3D position, Vector direction, double kC, double kL, double kQ, double concentration) {
         super(colorIntensity, position, kC, kL, kQ);
         this._direction = new Vector(direction).normalized();
         this._concentration = concentration;
     }
 
+    /**
+     * constructor
+     *
+     * @param colorIntensity
+     * @param position
+     * @param direction
+     * @param kC
+     * @param kL
+     * @param kQ
+     */
     public SpotLight(Color colorIntensity, Point3D position, Vector direction, double kC, double kL, double kQ) {
         this(colorIntensity, position, direction, kC, kL, kQ, 1);
     }
 
 
     /**
-     * @return spotlight intensity
+     * get the spot light intensity
+     *
+     * @param p Point3D
+     * @return the Color of the spot light
      */
     @Override
     public Color getIntensity(Point3D p) {
@@ -48,12 +74,12 @@ public class SpotLight extends PointLight {
             return Color.BLACK;
         }
         double factor = Math.max(0, projection);
-        Color pointlightIntensity = super.getIntensity(p);
+        Color spotlightIntensity = super.getIntensity(p);
 
         if (_concentration != 1) {
             factor = Math.pow(factor, _concentration);
         }
 
-        return (pointlightIntensity.scale(factor));
+        return (spotlightIntensity.scale(factor));
     }
 }

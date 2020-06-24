@@ -8,13 +8,29 @@ import java.util.Random;
 
 import static primitives.Util.isZero;
 
+/**
+ * The Camera class
+ */
 public class Camera {
     private static final Random rnd = new Random();
+    /**
+     * The origin of the camera
+     */
     Point3D _p0;
+    /**
+     * 3 vectors to define the position of the camera
+     */
     Vector _vTo;
     Vector _vUp;
     Vector _vRight;
 
+    /**
+     * constructor of the camera
+     *
+     * @param _p0
+     * @param _vTo
+     * @param _vUp
+     */
     public Camera(Point3D _p0, Vector _vTo, Vector _vUp) {
 
         //if the the vectors are not orthogonal, throw exception.
@@ -24,40 +40,73 @@ public class Camera {
         this._p0 = new Point3D(_p0);
         this._vTo = _vTo.normalized();
         this._vUp = _vUp.normalized();
-
+        // _vRight is the normal of the _vTo and _vUp vectors
         _vRight = this._vTo.crossProduct(this._vUp).normalize();
 
     }
 
-
+    /**
+     * get the origin of the camera
+     *
+     * @return Point3D of the origin
+     */
     public Point3D getP0() {
         return new Point3D(_p0);
     }
 
+    /**
+     * get vTo vector
+     *
+     * @return Vector vTo
+     */
     public Vector getVTo() {
         return new Vector(_vTo);
     }
 
+    /**
+     * get vUp vector
+     *
+     * @return Vector vUp
+     */
     public Vector getVUp() {
         return new Vector(_vUp);
     }
 
+    /**
+     * get vRight vector
+     *
+     * @return Vector vRight
+     */
     public Vector getVRight() {
         return new Vector(_vRight);
     }
 
+    /**
+     * construct a Ray through Pixel
+     *
+     * @param nX             number of pixels on x axis
+     * @param nY             number of pixels on y axis
+     * @param j              index of the pixel on the view plane on the x axis
+     * @param i              index of the pixel on the view plane on the y axis
+     * @param screenDistance the distance
+     * @param screenWidth
+     * @param screenHeight
+     * @return the Ray through Pixel
+     */
     public Ray constructRayThroughPixel(int nX, int nY,
                                         int j, int i, double screenDistance,
                                         double screenWidth, double screenHeight) {
         if (isZero(screenDistance)) {
             throw new IllegalArgumentException("distance cannot be 0");
         }
-
+        // Image center
         Point3D Pc = _p0.add(_vTo.scale(screenDistance));
 
+        // Ratio (pixel width & height)
         double Ry = screenHeight / nY;
         double Rx = screenWidth / nX;
 
+        // Pixel[i,j] center
         double yi = ((i - nY / 2d) * Ry + Ry / 2d);
         double xj = ((j - nX / 2d) * Rx + Rx / 2d);
 
@@ -73,7 +122,6 @@ public class Camera {
         Vector Vij = Pij.subtract(_p0);
 
         return new Ray(_p0, Vij);
-
     }
 
     /**
@@ -82,6 +130,7 @@ public class Camera {
      * @param density factor for the radius
      * @param amount  number of random rays
      * @return
+     * @author Dr Eliezer
      */
     public List<Ray> constructRayBeamThroughPixel(int nX, int nY, int j, int i,
                                                   double screenDistance, double screenWidth, double screenHeight,
@@ -121,7 +170,17 @@ public class Camera {
         return rays;
     }
 
-
+    /**
+     * @param nX
+     * @param nY
+     * @param i
+     * @param j
+     * @param screenDist
+     * @param screenWidth
+     * @param screenHeight
+     * @return
+     * @author Dr Eliezer
+     */
     public List<Ray> constructNineRaysThroughPixel(int nX, int nY, double i, double j, double screenDist,
                                                    double screenWidth, double screenHeight) {
 

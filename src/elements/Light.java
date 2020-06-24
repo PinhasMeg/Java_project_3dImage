@@ -3,6 +3,9 @@ package elements;
 import primitives.Color;
 import primitives.Point3D;
 
+/**
+ * The light abstract class
+ */
 public abstract class Light {
     /**
      * _intensity value, set to protected

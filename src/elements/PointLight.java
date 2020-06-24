@@ -30,6 +30,8 @@ import primitives.Vector;
  * <p>
  * By default, the constant attenuation value is 1 and the other two values are 0,
  * resulting in no attenuation.
+ *
+ *  @author Dr Eliezer
  */
 public class PointLight extends Light implements LightSource {
     Point3D _position;
@@ -37,6 +39,15 @@ public class PointLight extends Light implements LightSource {
     double _kL; // Linear attenuation
     double _kQ; // Quadratic attenuation
 
+    /**
+     * constructor
+     *
+     * @param colorIntensity
+     * @param position
+     * @param kC
+     * @param kL
+     * @param kQ
+     */
     public PointLight(Color colorIntensity, Point3D position, double kC, double kL, double kQ) {
         super(colorIntensity);
         this._position = new Point3D(position);
@@ -50,13 +61,13 @@ public class PointLight extends Light implements LightSource {
         this(colorIntensity, position, 1d, 0d, 0d);
     }
 
-    //dummy overriding Light getIntensity()
+    // overriding Light getIntensity()
     @Override
     public Color getIntensity() {
         return super.getIntensity();
     }
 
-    //overriding LightSource getIntensity(Point3D)
+    // overriding LightSource getIntensity(Point3D)
     @Override
     public Color getIntensity(Point3D p) {
         double dsquared = p.distanceSquared(_position);
@@ -65,7 +76,12 @@ public class PointLight extends Light implements LightSource {
         return (_intensity.reduce(_kC + _kL * d + _kQ * dsquared));
     }
 
-    // Light vector
+    /**
+     * Light vector
+     *
+     * @param p the lighted point
+     * @return The normalized vector from the point light to the Point3D
+     */
     @Override
     public Vector getL(Point3D p) {
         if (p.equals(_position)) {
@@ -74,6 +90,12 @@ public class PointLight extends Light implements LightSource {
         return p.subtract(_position).normalize();
     }
 
+    /**
+     * get the distance between the Point3D to the Point light
+     *
+     * @param point
+     * @return distance in double
+     */
     @Override
     public double getDistance(Point3D point) {
         return _position.distance(point);
