@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * The class that buil the scene
+ * The class that build the scene
  */
 public class Scene {
     private final String _name;
