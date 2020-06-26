@@ -119,7 +119,7 @@ public final class Main {
                         new Point3D(500, -500, 0),
                         new Vector(-1, 1, 1), 1, 1E-5, 1.5E-7));
 
-        ImageWriter imageWriter = new ImageWriter("MiniProject2", 400, 200, 800, 400);
+        ImageWriter imageWriter = new ImageWriter("MiniProject1", 400, 200, 800, 400);
         Render render = new Render(imageWriter, scene)
                 //.setSupersamplingDensity(0.5)
                 //.setRayCounter(25)

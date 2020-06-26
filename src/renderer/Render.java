@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Render {
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
-    private static final boolean SOFT_SHADOW_ACTIVE = false;
+    private static final boolean SOFT_SHADOW_ACTIVE = true;
     private static final int SOFT_SHADOW_SIZE_RAYS = 50;
     private static final double SOFT_SHADOW_RADIUS = 0.05;
     private final ImageWriter _imageWriter;
@@ -511,11 +511,14 @@ public class Render {
 //    }
 
     /**
+     * calculate the average transparency of the list of ray
+     * we received from the transparencyGetListOfRay method
+     *
      * @param l
      * @param n
      * @param gp
      * @param lightSource
-     * @return
+     * @return a double of the transparency
      */
     private double transparency(LightSource lightSource, Vector l, Vector n, GeoPoint gp) {
         double ktr = 0.0;
@@ -527,11 +530,12 @@ public class Render {
     }
 
     /**
+     * create a list of ray in order to calculate the transparency
      * @param l
      * @param n
      * @param gp
      * @param lightSource
-     * @return
+     * @return the List of Rays
      */
     private List<Ray> transparencyGetListOfRay(Vector l, Vector n, GeoPoint gp, LightSource lightSource) {
         Vector lightDirection = l.scale(-1); // from point to light source
@@ -546,6 +550,8 @@ public class Render {
             double x0 = p0.get_x().get();
             double y0 = p0.get_y().get();
             double z0 = p0.get_z().get();
+            // now, calculate 2 orthogonal vectors to create a circle
+            // as it was explained on the chiour
             Vector vX;
             if (x0 <= y0 && x0 <= z0) {
                 vX = (new Vector(0.0D, -z0, y0)).normalize();
@@ -557,10 +563,11 @@ public class Render {
                 vX = (new Vector(y0, -x0, 0.0D)).normalize();
             }
             Vector vY = v.crossProduct(vX).normalize();
+            //pc in on the center of our virtual circle
             Point3D pc = p0.add(v);
             while (counter > 0) {
-                double xFactor = ThreadLocalRandom.current().nextDouble(-1.0D, 1.0D);
-                double yFactor = Math.sqrt(1.0D - xFactor * xFactor);
+                double xFactor = ThreadLocalRandom.current().nextDouble(-1.0D, 1.0D);//cos
+                double yFactor = Math.sqrt(1.0D - xFactor * xFactor);//sin
                 double scale;
                 for (scale = 0.0D; isZero(scale); scale = ThreadLocalRandom.current().nextDouble(-SOFT_SHADOW_RADIUS, SOFT_SHADOW_RADIUS))
                     ;
@@ -570,7 +577,6 @@ public class Render {
                 if (!isZero(xFactor)) {
                     p = p.add(vX.scale(xFactor));
                 }
-
                 if (!isZero(yFactor)) {
                     p = p.add(vY.scale(yFactor));
                 }
@@ -585,6 +591,7 @@ public class Render {
     }
 
     /**
+     * calculate the transparency ray
      * @param ray
      * @param gp
      * @param lightSource
