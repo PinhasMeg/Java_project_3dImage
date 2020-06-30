@@ -1,7 +1,10 @@
 package elements;
 
+import geometries.Intersectable;
+import geometries.Plane;
 import primitives.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -240,5 +243,128 @@ public class Camera {
         return rays;
 
     }
+// ***************** Operations ******************** //
 
+    /**
+     * create a pixel on the view plane - made of four corners rayBeams
+     *
+     * @param nx             the number of columns
+     * @param ny             the number of rows
+     * @param i              the place of the pixel in rows
+     * @param j              the pace of the pixel in columns
+     * @param screenDistance
+     * @param screenWidth
+     * @param screenHeight
+     * @return a Pixel object uniting the corner rays
+     */
+    public Pixel constructPixelCorners(int nx, int ny, int j, int i, double screenDistance,
+                                       double screenWidth, double screenHeight) {
+        // Pc is the center point of the view plane: P0 + d*vTo
+        Point3D pc = _p0.add(_vTo.scale(screenDistance));
+        // ratio factors: rx is the width of each pixel
+        double rx = screenWidth / nx;
+        double ry = screenHeight / ny;
+        // Xi and Yj are the coefficients that would take us to the asked point from the Pc point
+        // Xi for moving in the X axis direction (right / left)
+        double xi = ((i - (nx / 2d)) * rx);
+        // Yj for moving in the Y axis direction (down / up)
+        double yj = ((j - (ny / 2d)) * ry);
+        // in case the both coefficients are zero, the asked point is the Pc point
+        Point3D upperLeftPoint = pc;
+        if (!Util.isZero(xi)) {
+            upperLeftPoint = upperLeftPoint.add(_vRight.scale(xi));
+        }
+        if (!Util.isZero(yj)) {
+            upperLeftPoint = upperLeftPoint.add(_vUp.scale(-yj));
+        }
+        // find 3 more points for corners of the pixel
+        Point3D upperRightPoint = upperLeftPoint.add(_vRight.scale(rx));
+        Point3D lowerRightPoint = upperRightPoint.add(_vUp.scale(ry));
+        Point3D lowerLeftPoint = upperLeftPoint.add(_vUp.scale(ry));
+        // build four rays in the corners of the pixel A,B,C,D
+        Ray aCorner = new Ray(_p0, upperLeftPoint.subtract(_p0));
+        Ray bCorner = new Ray(_p0, upperRightPoint.subtract(_p0));
+        Ray cCorner = new Ray(_p0, lowerRightPoint.subtract(_p0));
+        Ray dCorner = new Ray(_p0, lowerLeftPoint.subtract(_p0));
+        //create the desired pixel - Hallelujah!
+        Pixel pixel = new Pixel(upperLeftPoint, aCorner, upperRightPoint, bCorner, lowerRightPoint, cCorner,
+                lowerLeftPoint, dCorner, 1);
+        return pixel;
+    }
+
+    /**
+     * divide a pixel on the view plane into four subpixels made of the corners
+     *
+     * @param mainPixel - the pixel to divide
+     *                  //     * @param focusLength
+     *                  //     * @param apertureSize
+     *                  //     * @param dofRayBeamSize
+     * @return a list of the 4 new subPixels
+     */
+    public List<Pixel> dividePixel(Pixel mainPixel) {
+        //calculate the width and height of the pixel
+        double pixWidth = mainPixel.aPoint.distance(mainPixel.bPoint);
+        double pixHeight = mainPixel.aPoint.distance(mainPixel.dPoint);
+        //save the vectors that shift a point half way to right and to down
+        Vector halfWidthRightShifter = _vRight.scale(pixWidth / 2d);
+        Vector halfHeightDownShifter = _vUp.scale(pixHeight / 2d);
+        //find the 5 new points on the pixel we will shoot rays from
+        Point3D abMiddlePoint = mainPixel.aPoint.add(halfWidthRightShifter);
+        Point3D dcMiddlePoint = mainPixel.dPoint.add(halfWidthRightShifter);
+        Point3D adMiddlePoint = mainPixel.aPoint.add(halfHeightDownShifter);
+        Point3D bcMiddlePoint = mainPixel.bPoint.add(halfHeightDownShifter);
+        Point3D pixCenterPoint = abMiddlePoint.add(halfHeightDownShifter);
+
+        //make 5 rays by the points found
+        Ray abMiddle = new Ray(_p0, abMiddlePoint.subtract(_p0));
+        Ray dcMiddle = new Ray(_p0, dcMiddlePoint.subtract(_p0));
+        Ray adMiddle = new Ray(_p0, adMiddlePoint.subtract(_p0));
+        Ray bcMiddle = new Ray(_p0, bcMiddlePoint.subtract(_p0));
+        Ray pixCenter = new Ray(_p0, pixCenterPoint.subtract(_p0));
+
+        //the rank grows times 4
+        int subdivisionRank = mainPixel.getRank() * 4;
+        List<Pixel> subPixels = new ArrayList<>();
+        subPixels.add(new Pixel(mainPixel.aPoint, mainPixel.aCornerRays._ray, abMiddlePoint, abMiddle, pixCenterPoint, pixCenter, adMiddlePoint, adMiddle, subdivisionRank));
+        subPixels.add(new Pixel(abMiddlePoint, abMiddle, mainPixel.bPoint, mainPixel.bCornerRays._ray, bcMiddlePoint, bcMiddle, pixCenterPoint, pixCenter, subdivisionRank));
+        subPixels.add(new Pixel(adMiddlePoint, adMiddle, pixCenterPoint, pixCenter, dcMiddlePoint, dcMiddle, mainPixel.dPoint, mainPixel.dCornerRays._ray, subdivisionRank));
+        subPixels.add(new Pixel(pixCenterPoint, pixCenter, bcMiddlePoint, bcMiddle, mainPixel.cPoint, mainPixel.cCornerRays._ray, dcMiddlePoint, dcMiddle, subdivisionRank));
+        return subPixels;
+    }
+
+//    /**
+//     * help method for calculating the raybeam of the DOF model for a specific original ray
+//     * @param originalRay - the ray to be replaced by a beam of intesecting rays
+//     * @param focusLength
+//     * @param apertureSize
+//     * @param dofRayBeamSize
+//     * @return a list of the rays for the focus calculation
+//     */
+//    private List<Ray> calcDOFRays(Ray originalRay, double focusLength, double apertureSize, int dofRayBeamSize) {
+//        List<Ray> raysBeam = new ArrayList<Ray>();
+//        //in case the aperture is zero - no focus or unfocus is needed
+//        if (Util.isZero(apertureSize) || dofRayBeamSize == 0) {
+//            raysBeam.add(originalRay);
+//            return raysBeam;
+//        }
+//
+//        Point3D basePoint = originalRay.get_origin();
+//        // calculate focalPoint by building a plane for focus distance
+//        Point3D focalPlaneCenter = basePoint.add(_vTo.scale(focusLength));
+//        Plane focalPlane = new Plane(focalPlaneCenter, _vTo);
+//        List<Intersectable.GeoPoint> intersections = focalPlane.findIntersections(originalRay);
+//        Point3D focalPoint = intersections.get(0).getPoint();
+//
+//        // create rays randomly within the range of the aperture size, directed to the
+//        // focal point
+//        double halfAperture = apertureSize / 2d;
+//        for (int count = 0; count < dofRayBeamSize; count++) {
+//            //shift the point of the ray stat randomly within the range of the aperture size
+//            Point3D shiftedPoint = basePoint.add(_vRight.scale(Util.getNotZeroRandom() * halfAperture));
+//            shiftedPoint = shiftedPoint.add(_vUp.scale(Util.getNotZeroRandom() * halfAperture));
+//            Ray ray = new Ray(shiftedPoint, focalPoint.subtract(shiftedPoint));
+//            raysBeam.add(ray);
+//        }
+//        return raysBeam;
+//    }
 }

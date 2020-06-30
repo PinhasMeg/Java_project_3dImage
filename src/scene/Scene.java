@@ -15,6 +15,9 @@ public class Scene {
     private final Geometries _geometries = new Geometries();
     private Color _background;
     private Camera _camera;
+    /**
+     * the distance of the view-plane from the camera lens
+     */
     private double _distance;
     private AmbientLight _ambientLight;
     private List<LightSource> _lights = null;

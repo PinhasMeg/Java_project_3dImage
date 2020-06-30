@@ -2,13 +2,17 @@ package renderer;
 
 import elements.*;
 import geometries.*;
-import org.junit.jupiter.api.Disabled;
+//import org.junit.jupiter.api.Disabled;
 import primitives.*;
 import scene.Scene;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Collections;
+//import java.util.concurrent.Executors;
+//import java.util.concurrent.ThreadPoolExecutor;
+//import java.util.concurrent.TimeUnit;
 
 import static geometries.Intersectable.GeoPoint;
 import static primitives.Util.alignZero;
@@ -22,7 +26,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Render {
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
-    private static final boolean SOFT_SHADOW_ACTIVE = true;
+    private static final boolean SOFT_SHADOW_ACTIVE = false;
     private static final int SOFT_SHADOW_SIZE_RAYS = 50;
     private static final double SOFT_SHADOW_RADIUS = 0.05;
     private final ImageWriter _imageWriter;
@@ -32,17 +36,87 @@ public class Render {
     private int _rayCounter = 1;
     private int _threads = 1;
     private boolean _print = false;
+    /**
+     * threshold for color difference (the percentage is the value / 255)
+     */
+    private static final double COLOR_DIFFERENCE_THRESHOLD = 20;
+    /**
+     * the rendered scene background color
+     */
+    Color backgroundColor;
+    /**
+     * number of pixel rows in the picture
+     */
+    int nX;
+    /**
+     * number of pixel columns in the picture
+     */
+    int nY;
+    /**
+     * the distance of the view plane from the lens
+     */
+    double screenDistance;
+    /**
+     * height of the view plane
+     */
+    double screenHeight;
+    /**
+     * width of the view plane
+     */
+    double screenWidth;
+//    /**the actual amount of processors in the computer */
+//    int actualCores;
+    /**
+     * boolean flag for rendering with or without adaptive sampling
+     */
+    boolean _adaptiveSampling;
 
     /**
-     * constructor
+     * constructor that gets the image writer and the scene objects
      *
      * @param imageWriter
      * @param scene
      */
     public Render(ImageWriter imageWriter, Scene scene) {
-        this._imageWriter = imageWriter;
-        this._scene = scene;
-        this._supersamplingDensity = 0d;
+        _imageWriter = imageWriter;
+        _scene = scene;
+        _adaptiveSampling = false;
+
+        // number of rows
+        nX = _imageWriter.getNx();
+        // number of columns
+        nY = _imageWriter.getNy();
+        screenDistance = _scene.getDistance();
+        screenHeight = _imageWriter.getHeight();
+        screenWidth = _imageWriter.getWidth();
+        backgroundColor = _scene.getBackground();
+//        //get the number of cores in the running machine
+//        actualCores = Runtime.getRuntime().availableProcessors();
+    }
+
+    /**
+     * constructor that gets the image writer and the scene objects and flag for
+     * adaptive sampling
+     *
+     * @param imageWriter
+     * @param scene
+     * @param adaptiveSampling - implementing supersampling adaptive or not
+     */
+    public Render(ImageWriter imageWriter, Scene scene, boolean adaptiveSampling) {
+
+        _adaptiveSampling = adaptiveSampling;
+        _imageWriter = imageWriter;
+        _scene = scene;
+        // number of rows
+        nX = _imageWriter.getNx();
+        // number of columns
+        nY = _imageWriter.getNy();
+        screenDistance = _scene.getDistance();
+        screenHeight = _imageWriter.getHeight();
+        screenWidth = _imageWriter.getWidth();
+        backgroundColor = _scene.getBackground();
+//        //get the number of cores in the running machine
+//        actualCores = Runtime.getRuntime().availableProcessors();
     }
 
     /**
@@ -104,7 +178,7 @@ public class Render {
     /**
      * render the image with multi-threading
      */
-    public void renderImage() {
+    public void renderImage2() {
         Camera camera = _scene.getCamera();
         //Intersectable geometries = _scene.getGeometries();
         Color background = _scene.getBackground();
@@ -128,6 +202,56 @@ public class Render {
                         resultingColor = getPixelRayColor(camera, background, distance, Nx, Ny, width, height, pixel);
                     } else {
                         resultingColor = getPixelRaysBeamColor(camera, distance, Nx, Ny, width, height, pixel);
+                    }
+                    _imageWriter.writePixel(pixel.col, pixel.row, resultingColor.getColor());
+                }
+            });
+        }
+        // Start threads
+        for (Thread thread : threads) thread.start();
+        // Wait for all threads to finish
+        for (Thread thread : threads)
+            try {
+                thread.join();
+            } catch (Exception e) {
+            }
+        if (_print) System.out.printf("\r100%%\n");
+    }
+
+    /**
+     * render the image with multi-threading
+     */
+    public void renderImage() {
+        Camera camera = _scene.getCamera();
+        //Intersectable geometries = _scene.getGeometries();
+        Color background = _scene.getBackground();
+        //AmbientLight ambientLight = _scene.getAmbientLight();
+        double distance = _scene.getDistance();
+
+        int Nx = _imageWriter.getNx();
+        int Ny = _imageWriter.getNy();
+        double width = _imageWriter.getWidth();
+        double height = _imageWriter.getHeight();
+
+        final Pixel thePixel = new Pixel(Ny, Nx);
+
+        Thread[] threads = new Thread[_threads];
+        for (int i = _threads - 1; i >= 0; --i) {
+            threads[i] = new Thread(() -> {
+                Pixel pixel = new Pixel();
+                Color resultingColor;
+                while (thePixel.nextPixel(pixel)) {
+//                    if (_supersamplingDensity == 0d) {//         without supersampling
+//                        resultingColor = getPixelRayColor(camera, background, distance, Nx, Ny, width, height, pixel);
+//                    }
+                    if (_adaptiveSampling == false) {
+                        resultingColor = getPixelRaysBeamColor(camera, distance, Nx, Ny, width, height, pixel);
+                    }
+//                    if (_adaptiveSampling==false) {//         without adaptivesampling
+//                        resultingColor = getPixelRayColor(camera, background, distance, Nx, Ny, width, height, pixel);
+//                    }
+                    else {
+                        resultingColor = pixelColorByAdaptiveSampling(pixel.col, pixel.row);
                     }
                     _imageWriter.writePixel(pixel.col, pixel.row, resultingColor.getColor());
                 }
@@ -368,7 +492,7 @@ public class Render {
 //                    ktr = 0d;
 //                }
                     ktr = transparency(lightSource, l, n, geoPoint);
-                    if (ktr * k > MIN_CALC_COLOR_K) {
+                    if (ktr * k > MIN_CALC_COLOR_K && !isZero(nl)) {
                         Color lightIntensity = lightSource.getIntensity(pointGeo).scale(ktr);
                         color = color.add(
                                 calcDiffusive(kd, nl, lightIntensity),
@@ -400,14 +524,14 @@ public class Render {
      * @return The Reflected Ray
      */
     private Ray constructReflectedRay(Point3D pointGeo, Ray inRay, Vector n) {
-        //r = v - 2.(v.n).n
+
         Vector v = inRay.get_vector();
         double vn = v.dotProduct(n);
 
-        if (vn == 0) {
+        if (isZero(vn)){
             return null;
         }
-
+        // reflected = v -( 2 * (v * n )* n)
         Vector r = v.subtract(n.scale(2 * vn));
         return new Ray(pointGeo, r, n);
     }
@@ -695,7 +819,7 @@ public class Render {
      *
      * @author Dan
      */
-    private class Pixel {
+    public class Pixel {
         public volatile int row = 0;
         public volatile int col = -1;
         private long _maxRows = 0;
@@ -779,4 +903,138 @@ public class Render {
 
         }
     }
+
+/******************************************************************************************************************/
+
+    /**
+     * checks if corners colors of a pixel are close enough to be considered as the same color
+     *
+     * @param pixel
+     * @return boolean same or not
+     */
+    private boolean isSameColor(elements.Pixel pixel) {
+        // check if any corner is different dramatically from it's neighbors
+        return (difference(pixel.aCornerRays.color, pixel.bCornerRays.color) < COLOR_DIFFERENCE_THRESHOLD
+                && difference(pixel.aCornerRays.color, pixel.dCornerRays.color) < COLOR_DIFFERENCE_THRESHOLD
+                && difference(pixel.cCornerRays.color, pixel.bCornerRays.color) < COLOR_DIFFERENCE_THRESHOLD
+                && difference(pixel.cCornerRays.color, pixel.dCornerRays.color) < COLOR_DIFFERENCE_THRESHOLD);
+    }
+
+    /**
+     * calculate and save the color of a rayBeam in a pixel if it is not saved already
+     *
+     * @param pixel
+     */
+    private void setPixelCornersColors(elements.Pixel pixel) {
+        //a corner that has not been checked for its color is null
+        if (pixel.aCornerRays.color == null)
+            pixel.aCornerRays.color = (calcRayColor(pixel.aCornerRays._ray));
+        if (pixel.bCornerRays.color == null)
+            pixel.bCornerRays.color = (calcRayColor(pixel.bCornerRays._ray));
+        if (pixel.cCornerRays.color == null)
+            pixel.cCornerRays.color = (calcRayColor(pixel.cCornerRays._ray));
+        if (pixel.dCornerRays.color == null)
+            pixel.dCornerRays.color = (calcRayColor(pixel.dCornerRays._ray));
+
+    }
+//    /**
+//     * the method writes an image of the scene, for every pixel we calculate the color and write it in a separate thread
+//     * @throws InterruptedException
+//     */
+//    public void renderImage3() {
+//        //create a thread pool sized by the number of processors
+//        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(actualCores);
+//        //for each [i,j] pixel
+//        for (int i = 0; i < nX; ++i) {
+//            for (int j = 0; j < nY; ++j) {
+//                int x = i;
+//                int y = j;
+//                //define the calculation to do for every pixel in a single thread
+//                Runnable runnable = () ->{
+//                    Color resultColor = pixelColorByAdaptiveSampling(x, y);
+//                    _imageWriter.writePixel(x, y, resultColor.getColor());
+//                };
+//                executor.execute(runnable);
+//            }
+//        }
+//        //after all - finish the thread work
+//        executor.shutdown();
+//        try {
+//            while(!executor.awaitTermination(1, TimeUnit.HOURS));
+//        } catch (InterruptedException e) {}
+//    }
+
+    /**
+     * calculate the color of [i,j] pixel in the picture - superSampling is adaptive
+     *
+     * @param i
+     * @param j
+     * @return the color to paint the pixel
+     */
+    private Color pixelColorByAdaptiveSampling(int i, int j) {
+        Color resultColor = Color.BLACK;
+        //create the pixel that is calculated by the camera
+        elements.Pixel pixel = _scene.getCamera().constructPixelCorners(nX, nY, j, i, screenDistance,
+                screenWidth, screenHeight);
+        //save the colors of the pixel corners
+        setPixelCornersColors(pixel);
+        //in case the colors of the corners are close enough - the result is the average of the corners colors
+        if (isSameColor(pixel)) {
+            return resultColor.add(pixel.aCornerRays.color, pixel.bCornerRays.color, pixel.cCornerRays.color,
+                    pixel.dCornerRays.color).reduce(4);
+        }
+
+        //in case the colors are different - divide the pixel and check the sub pixels
+        List<elements.Pixel> pixels = new ArrayList<>();
+        pixels.add(pixel);
+        //every time sub pixels are added - the size of the list grows
+        for (int k = 0; k < pixels.size(); ++k) {
+            elements.Pixel subPixel = pixels.get(k);
+            setPixelCornersColors(subPixel);
+            //in case the colors of the sub pixel are different and it is not the last level of division - divide it
+            if (!isSameColor(subPixel) && subPixel.getRank() < 64)
+                pixels.addAll(_scene.getCamera().dividePixel(subPixel));
+                //if colors are similar or the pixel is maximum divided - add the color part of the sub pixel
+            else {
+                Color tmpColor = subPixel.aCornerRays.color.add(subPixel.bCornerRays.color, subPixel.cCornerRays.color,
+                        subPixel.dCornerRays.color);
+                tmpColor = tmpColor.reduce(4);
+                //the part contributed to the result is 1 / rank
+                resultColor = resultColor.add(tmpColor.reduce(subPixel.getRank()));
+            }
+        }
+        return resultColor;
+    }
+
+    /**
+     * checks the difference between two colors and returns the difference value
+     *
+     * @param color1
+     * @param color2
+     * @return difference value (called the delta in math)
+     */
+    private double difference(Color color1, Color color2) {
+        //difference of color is (|R1 - R2| + |G1 - G2| + |B1 - B2|) / 255
+        double r = Math.abs(color1.getColor().getRed() - color2.getColor().getRed());
+        double g = Math.abs(color1.getColor().getGreen() - color2.getColor().getGreen());
+        double b = Math.abs(color1.getColor().getBlue() - color2.getColor().getBlue());
+        // the value is still related to 255 whole value, the threshold is the fragment of 255
+        return r + g + b;
+    }
+
+    /**
+     * method calculates the color of the ray
+     *
+     * @param ray
+     * @return the  color of the ray
+     */
+    private Color calcRayColor(Ray ray) {
+        Color color = Color.BLACK;
+        // result color is the intersection color or background
+        GeoPoint closestPoint = findClosestIntersection(ray);
+        color = color.add(closestPoint == null ? backgroundColor : calcColor(closestPoint, ray));
+
+        return color;
+    }
 }
+
